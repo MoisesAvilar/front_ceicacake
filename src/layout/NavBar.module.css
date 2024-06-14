@@ -1,0 +1,9 @@
+.nav a {
+  color: var(--primary_color);
+}
+
+.navList {
+  display: flex;
+  gap: 1rem;
+  list-style-type: none;
+}
