@@ -1,0 +1,41 @@
+@keyframes slide {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.message {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  font-size: 1em;
+  padding: 0.5em;
+  border-radius: 5px;
+  text-align: center;
+  animation: slide 1s ease-out;
+}
+
+.success {
+  background-color: #d4edda;
+  color: var(--success);
+  border: 1px solid #c3e6cb;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: var(--error);
+  border: 1px solid #f5c6cb;
+}
+
+.info {
+  background-color: #d1ecf1;
+  color: var(--info);
+  border: 1px solid #bee5eb;
+}

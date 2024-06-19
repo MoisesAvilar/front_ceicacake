@@ -1,0 +1,45 @@
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  padding: 50px;
+  margin-bottom: 20px;
+}
+
+.legend {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.label {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input,
+.select {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid var(--gray);
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: var(--button_edit_color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: var(--button_edit_hover_color);
+}

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_URL } from "../services/api";
-import { CustomerTypes } from "../types/customerTypes";
-import axiosInstance from "../services/axiosConfig";
+import { BASE_URL } from "../../services/api";
+import axiosInstance from "../../services/axiosConfig";
+
+import { CustomerTypes } from "../../types/customerTypes";
+
+import styles from './Form.module.css'
 
 const CustomerForm: React.FC = () => {
   const [customer, setCustomer] = useState<CustomerTypes>({
     name: "",
-    phoneNumber: null,
+    phone_number: null,
     birthday: null,
     bought: 0.0,
   });
@@ -44,11 +47,15 @@ const CustomerForm: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const { name, value } = event.target;
     setCustomer((prevCustomer) => ({
       ...prevCustomer,
-      [name]: value || null,
+      [name]: value,
     }));
   };
 
@@ -68,31 +75,34 @@ const CustomerForm: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Cliente atualizado com sucesso!");
+        localStorage.setItem("message", "Cliente atualizado com sucesso");
+        localStorage.setItem("type", "success");
       } else {
         await axiosInstance.post(`${BASE_URL}/customers/`, customer, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Cliente cadastrado com sucesso!");
+        localStorage.setItem("message", "Cliente cadastrado com sucesso");
+        localStorage.setItem("type", "success");
       }
       navigate("/customers");
     } catch (error) {
-      console.log(
-        `Ocorreu um erro ao ${
-          isEditing ? "atualizar" : "cadastrar"
-        } o cliente:`,
-        error
-      );
+      console.log("Houve um erro ao registrar o cliente:", error);
+      localStorage.setItem("message", "Houve um erro ao registrar o cliente");
+      localStorage.setItem("type", "error");
     }
   };
 
   return (
-    <div>
-      <h2>{isEditing ? "Editar Cliente" : "Cadastro de Clientes"}</h2>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Nome:</label>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>
+          {isEditing ? "Editar Cliente" : "Cadastro de Clientes"}
+        </legend>
+        <label htmlFor="name" className={styles.label}>
+          {isEditing ? "Nome" : "Nome *"}
+        </label>
         <input
           type="text"
           id="name"
@@ -100,34 +110,48 @@ const CustomerForm: React.FC = () => {
           value={customer.name}
           required
           onChange={handleChange}
+          className={styles.input}
+          placeholder="Nome do cliente"
         />
-        <label htmlFor="phone_number">Telefone:</label>
+        <label htmlFor="phone_number" className={styles.label}>
+          Telefone
+        </label>
         <input
           type="tel"
           id="phone_number"
-          name="phoneNumber"
-          value={customer.phoneNumber || ""}
+          name="phone_number"
+          value={customer.phone_number || ""}
           onChange={handleChange}
+          className={styles.input}
+          placeholder="(99) 99999-9999"
         />
-        <label htmlFor="birthday">Data de Nascimento:</label>
+        <label htmlFor="birthday" className={styles.label}>
+          Data de Nascimento
+        </label>
         <input
           type="date"
           id="birthday"
           name="birthday"
           value={customer.birthday || ""}
           onChange={handleChange}
+          className={styles.input}
         />
-        <label htmlFor="bought">Compras:</label>
+        <label htmlFor="bought" className={styles.label}>
+          Valor em compras
+        </label>
         <input
           type="number"
           id="bought"
           name="bought"
           value={customer.bought}
           onChange={handleChange}
+          className={styles.input}
         />
-        <button type="submit">{isEditing ? "Atualizar" : "Cadastrar"}</button>
-      </form>
-    </div>
+        <button type="submit" className={styles.button}>
+          {isEditing ? "Atualizar" : "Cadastrar"}
+        </button>
+      </fieldset>
+    </form>
   );
 };
 

@@ -1,6 +1,6 @@
 export type CustomerTypes = {
   name: string;
-  phoneNumber?: string | null;
+  phone_number?: string | null;
   birthday?: string | null;
-  bought?: number;
+  bought: number;
 };

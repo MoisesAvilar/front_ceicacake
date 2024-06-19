@@ -1,0 +1,53 @@
+h3 {
+  display: flex;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 2em;
+  color: var(--white);
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  margin: 2em auto;
+  padding: 1em;
+  width: 350px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.saleContainer,
+.customerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  color: var(--white);
+  border-bottom: 2px solid var(--pink);
+  padding-bottom: 0.3em;
+}
+
+.saleContainer a, 
+.customerContainer a {
+  font-size: 1.2em;
+  text-decoration: none;
+  margin: 0.5em 0;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.saleContainer a:hover,
+.customerContainer a:hover {
+  text-decoration: underline;
+  background-color: var(--pink_border);
+  color: white;
+}

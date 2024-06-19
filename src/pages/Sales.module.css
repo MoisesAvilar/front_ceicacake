@@ -1,0 +1,124 @@
+.container {
+  padding: 1em;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+  position: sticky;
+  top: 0;
+  background-color: var(--white_transparent);
+  padding: 0.5em;
+  border-bottom: 1px solid var(--black);
+  color: var(--black);
+}
+
+.salesList {
+  list-style: none;
+  padding: 0;
+  color: var(--black);
+}
+
+.saleItem {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 1em;
+  margin-bottom: 1em;
+  background-color: var(--white_transparent);
+}
+
+.saleItem:hover {
+  background-color: #e3e3e3;
+  transform: scale(1.01);
+  transition: all 0.3s ease-in-out;
+
+}
+
+.saleItem div {
+  margin-bottom: 0.5em;
+}
+
+.saleItem strong {
+  margin-right: 0.5em;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkbox + label {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.checkbox + label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.2s ease-in-out;
+  border-radius: 50%;
+}
+
+.checkbox:checked + label::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.saleActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button.delete {
+  background-color: var(--button_delete_color);
+  color: var(--white);
+}
+
+.button.edit {
+  background-color: var(--button_edit_color);
+  color: var(--white);
+}
+
+.deleteSales {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  margin: 0 auto;
+  width: 90vw;
+}
+
+.link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,73 @@
+.container {
+  padding: 1em;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+  position: sticky;
+  top: 0;
+  background-color: var(--white_transparent);
+  padding: 0.5em;
+  border-bottom: 1px solid var(--black);
+  color: var(--black);
+}
+
+.customersList {
+  list-style: none;
+  padding: 0;
+  color: var(--black);
+}
+
+.customerItem {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 1em;
+  margin-bottom: 1em;
+  background-color: var(--white_transparent);
+}
+
+.customerItem div {
+  margin-bottom: 0.5em;
+}
+
+.customerItem strong {
+  margin-right: 0.5em;
+}
+
+.customerActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button.delete {
+  background-color: var(--button_delete_color);
+  color: var(--white);
+}
+
+.button.edit {
+  background-color: var(--button_edit_color);
+  color: var(--white);
+}
+
+.link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

@@ -1,4 +1,4 @@
 export const PaymentStatus = [
-    { value: "PAGO", label: "PAGO" },
-    { value: "PENDENTE", label: "PENDENTE" },
+    { value: "PAGO", label: "Pago" },
+    { value: "PENDENTE", label: "Pendente" },
 ]

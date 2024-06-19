@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { BASE_URL } from "../services/api";
+import { BASE_URL } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
-import CustomersName from "../services/customersName";
-import { Products } from "../services/products";
-import { SalesTypes } from "../types/salesTypes";
-import axiosInstance from "../services/axiosConfig";
-import { PaymentStatus } from "../services/payment_status";
+import axiosInstance from "../../services/axiosConfig";
+
+import CustomersName from "../../services/customersName";
+import { Products } from "../../services/products";
+import { SalesTypes } from "../../types/salesTypes";
+import { PaymentStatus } from "../../services/payment_status";
+
+import styles from "./Form.module.css";
 
 const SalesForm: React.FC = () => {
   const [sales, setSales] = useState<SalesTypes>({
@@ -48,11 +51,15 @@ const SalesForm: React.FC = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    event:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const { name, value } = event.target;
     setSales((prevSales) => ({
       ...prevSales,
-      [name]: value || null,
+      [name]: value,
     }));
   };
 
@@ -72,14 +79,17 @@ const SalesForm: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Venda atualizada com sucesso!");
+        localStorage.setItem("message", "Venda atualizada com sucesso");
+        localStorage.setItem("type", "success");
       } else {
         await axiosInstance.post(`${BASE_URL}/sales/`, sales, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Venda registrada com sucesso!");
+
+        localStorage.setItem("message", "Venda cadastrada com sucesso");
+        localStorage.setItem("type", "success");
       }
       navigate("/sales");
     } catch (error) {
@@ -87,6 +97,11 @@ const SalesForm: React.FC = () => {
         `Ocorreu um erro ao ${isEditing ? "atualizar" : "cadastrar"} a venda:`,
         error
       );
+      localStorage.setItem(
+        "message",
+        `Ocorreu um erro ao {isEditing ? 'atualizar' : 'cadastrar'} a venda:`
+      );
+      localStorage.setItem("type", "error");
     }
   };
 
@@ -95,64 +110,98 @@ const SalesForm: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>{isEditing ? "Editar Venda" : "Registrar Venda"}</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="product">Produto:</label>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <fieldset className={styles.fieldset}>
+        <legend className={styles.legend}>
+          {isEditing ? "Editar Venda" : "Registrar Venda"}
+        </legend>
+        <label htmlFor="product" className={styles.label}>
+          Produto
+        </label>
         <select
           name="product"
           id="product"
           value={sales.product}
           onChange={(e) => setSales({ ...sales, product: e.target.value })}
+          required
+          className={styles.select}
         >
+          <option value="" disabled selected hidden>
+            Selecione um produto
+          </option>
           {Products.map((product) => (
             <option key={product.value} value={product.value}>
               {product.label}
             </option>
           ))}
         </select>
-        <label htmlFor="price">Preço:</label>
+        <label htmlFor="price" className={styles.label}>
+          Preço
+        </label>
         <input
           type="number"
           id="price"
           name="price"
+          placeholder="Informe o preço"
           value={sales.price}
           onChange={handleChange}
+          required
+          className={styles.input}
         />
-        <label htmlFor="quantity">Quantidade:</label>
+        <label htmlFor="quantity" className={styles.label}>
+          Quantidade
+        </label>
         <input
           type="number"
           id="quantity"
           name="quantity"
+          placeholder="Informe a quantidade"
           value={sales.quantity}
           onChange={handleChange}
+          required
+          className={styles.input}
         />
-        <label htmlFor="customer">Cliente:</label>
+        <label htmlFor="customer" className={styles.label}>
+          Cliente
+        </label>
         <select
           name="customer"
           id="customer"
           value={sales.customer}
           onChange={(e) => setSales({ ...sales, customer: e.target.value })}
+          required
+          className={styles.select}
         >
+          <option value="" disabled selected hidden>
+            Selecione um cliente
+          </option>
           <CustomersName />
         </select>
-        <label htmlFor="payment_status">Status de pagamento:</label>
+        <label htmlFor="payment_status" className={styles.label}>
+          Status de pagamento
+        </label>
         <select
           name="payment_status"
           id="payment_status"
-          onChange={(e) =>
-            setSales({ ...sales, payment_status: e.target.value })
-          }
+          value={sales.payment_status}
+          onChange={handleChange}
+          required
+          className={styles.select}
         >
+          <option value="" disabled selected hidden>
+            Selecione o status
+          </option>
           {PaymentStatus.map((status) => (
             <option key={status.value} value={status.value}>
               {status.label}
             </option>
           ))}
         </select>
-        <button type="submit">{isEditing ? "Atualizar" : "Registrar"}</button>
-      </form>
-    </div>
+        <button type="submit" className={styles.button}>
+          {isEditing ? "Atualizar" : "Registrar"}
+        </button>
+      </fieldset>
+    </form>
   );
 };
 
