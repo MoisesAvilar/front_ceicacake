@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
@@ -135,6 +136,12 @@ const Sales: React.FC = () => {
     });
   };
 
+  const formatDate = (date: string | null) => {
+    if (!date) return "N/A";
+    const parsedDate = parseISO(date);
+    return  format(parsedDate, "dd/MM/yyyy - HH:mm");
+  }
+
   const toCapitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLocaleLowerCase();
   };
@@ -188,7 +195,7 @@ const Sales: React.FC = () => {
                   </div>
                   <div>
                     <strong>Data:</strong>{" "}
-                    {new Date(sale.data_hour).toLocaleString()}
+                    {formatDate(sale.data_hour)}
                   </div>
                   <div>
                     <strong>Status do Pagamento:</strong>{" "}

@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
@@ -99,7 +100,8 @@ const Customers: React.FC = () => {
 
   const formatDate = (date: string | null) => {
     if (!date) return "N/A";
-    return new Date(date).toLocaleDateString("pt-BR");
+    const parsedDate = parseISO(date);
+    return format(parsedDate, "dd/MM/yyyy");
   };
 
   return (
@@ -132,12 +134,12 @@ const Customers: React.FC = () => {
                   {formatPhoneNumber(customer.phone_number)}
                 </div>
                 <div>
-                  <strong>Data deNascimento:</strong>
+                  <strong>Data de Nascimento:</strong>
                   {formatDate(customer.birthday)}
                 </div>
                 <div>
                   <strong>Compras:</strong>
-                  {customer.bought.toFixed(2).replace(".", ",")}
+                  R${customer.bought.toFixed(2).replace(".", ",")}
                 </div>
                 <div className={styles.customerActions}>
                   <Link

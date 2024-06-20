@@ -23,7 +23,7 @@ const Home: React.FC = () => {
   });
 
   useEffect(() => {
-    if (greeting) {
+    if (greeting) {;
       setMessage({ msg: greeting, type: "success" });
       setTimeout(() => {
         setMessage({ msg: "", type: "success" });
