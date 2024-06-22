@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "./api";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "./axiosConfig";
+import CapitalizeText from "../components/CapitalizeText";
 
 const CustomersName: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -34,7 +35,7 @@ const CustomersName: React.FC = () => {
       {customers.length > 0 ? (
         customers.map((customer) => (
           <option key={customer.id} value={customer.id}>
-            {customer.name}
+            {<CapitalizeText text={customer.name} />}
           </option>
         ))
       ) : (

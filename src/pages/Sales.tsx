@@ -1,5 +1,5 @@
 import { format, parseISO } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { BASE_URL } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
@@ -7,6 +7,7 @@ import axiosInstance from "../services/axiosConfig";
 import styles from "./Sales.module.css";
 import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
+import CapitalizeText from "../components/CapitalizeText";
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
@@ -16,7 +17,37 @@ const Sales: React.FC = () => {
     type: "success",
   });
 
+  const [filterClient, setFilterClient] = useState<string>("");
+  const [filterProduct, setFilterProduct] = useState<string>("");
+  const [filterPaymentStatus, setFilterPaymentStatus] = useState<string>("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const [uniqueClients, setUniqueClients] = useState<string[]>([]);
+  const [uniqueProducts, setUniqueProducts] = useState<string[]>([]);
+  const [uniquePaymentStatus, setUniquePaymentStatus] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+
   const navigate = useNavigate();
+
+  const filterRef = useRef<HTMLDivElement>(null); // Ref para o elemento de filtro
+
+  // Função para fechar o filtro quando clicar fora dele
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      filterRef.current &&
+      !filterRef.current.contains(event.target as Node)
+    ) {
+      setShowFilters(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside); // Adiciona o event listener no documento
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside); // Remove o event listener ao desmontar o componente
+    };
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -136,37 +167,157 @@ const Sales: React.FC = () => {
     });
   };
 
+  const handleSortByDate = () => {
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
   const formatDate = (date: string | null) => {
     if (!date) return "N/A";
     const parsedDate = parseISO(date);
-    return  format(parsedDate, "dd/MM/yyyy - HH:mm");
-  }
-
-  const toCapitalize = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLocaleLowerCase();
+    return format(parsedDate, "dd/MM/yyyy - HH:mm");
   };
+
+  useEffect(() => {
+    // Função para obter opções únicas de um campo em um array de vendas
+    const getUniqueOptions = (sales: any[], field: string): string[] => {
+      const uniqueOptions = sales.reduce((acc: string[], sale) => {
+        if (sale[field] && !acc.includes(sale[field])) {
+          acc.push(sale[field]);
+        }
+        return acc;
+      }, []);
+      return uniqueOptions;
+    };
+
+    // Atualiza estados com opções únicas
+    if (sales.length > 0) {
+      setUniqueClients(getUniqueOptions(sales, "customer_name"));
+      setUniqueProducts(getUniqueOptions(sales, "product_name"));
+      setUniquePaymentStatus(getUniqueOptions(sales, "payment_status"));
+    }
+  }, [sales]); // Dependência sales para atualizar quando as vendas mudarem
 
   return (
     <>
       <div className={styles.container}>
         {message.msg && <Message msg={message.msg} type={message.type} />}
         <div className={styles.header}>
-          <h2>Vendas</h2>
-          <Link to="/sales/new" className={styles.link}>
-            Registrar Venda
-          </Link>
+          <div className={styles.title}>
+            <h2>Vendas</h2>
+            <Link to="/sales/new" className={styles.link}>
+              Registrar Venda
+            </Link>
+          </div>
+          <div className={styles.buttonContainer}>
+            <button
+              className={styles.filterButton}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              {showFilters ? "Fechar Filtro" : "Filtrar"}
+            </button>
+          </div>
         </div>
+
+        {/* Filtros dentro do container principal */}
+        {showFilters && (
+          <div ref={filterRef} className={styles.filters}>
+            <label htmlFor="filterClient">Filtrar por Cliente:</label>
+            <select
+              id="filterClient"
+              value={filterClient}
+              onChange={(e) => setFilterClient(e.target.value)}
+            >
+              <option value="">Todos os Clientes</option>
+              {uniqueClients.map((client, index) => (
+                <option key={index} value={client}>
+                  {<CapitalizeText text={client} />}
+                </option>
+              ))}
+            </select>
+
+            <label htmlFor="filterProduct">Filtrar por Produto:</label>
+            <select
+              id="filterProduct"
+              value={filterProduct}
+              onChange={(e) => setFilterProduct(e.target.value)}
+            >
+              <option value="">Todos os Produtos</option>
+              {uniqueProducts.map((product, index) => (
+                <option key={index} value={product}>
+                  {product}
+                </option>
+              ))}
+            </select>
+
+            <label htmlFor="filterPaymentStatus">
+              Filtrar por Status de Pagamento:
+            </label>
+            <select
+              id="filterPaymentStatus"
+              value={filterPaymentStatus}
+              onChange={(e) => setFilterPaymentStatus(e.target.value)}
+            >
+              <option value="">Todos os Status</option>
+              {uniquePaymentStatus.map((status, index) => (
+                <option key={index} value={status}>
+                  {<CapitalizeText text={status} />}
+                </option>
+              ))}
+            </select>
+            <button
+              className={`${styles.button} ${styles.edit}`}
+              onClick={handleSortByDate}
+            >
+              Ordenar por Data {sortDirection === "asc" ? "↓" : "↑"}
+            </button>
+
+            {/* Renderização da lista de vendas ou mensagem de não há vendas */}
+            {sales.length > 0 ? (
+              <ul className={styles.salesList}>
+                {/* Mapeamento das vendas */}
+              </ul>
+            ) : (
+              <p>Não há vendas cadastradas ainda.</p>
+            )}
+          </div>
+        )}
+
         {selectedSales.size > 1 && (
-          <button
-            onClick={handleDeleteSelectedSales}
-            className={`${styles.delete} ${styles.button} ${styles.deleteSales}`}
-          >
-            Excluir {selectedSales.size} Venda(s)
-          </button>
+          <div>
+            <button
+              onClick={handleDeleteSelectedSales}
+              className={`${styles.delete} ${styles.button} ${styles.deleteSales}`}
+            >
+              Excluir {selectedSales.size} Venda(s)
+            </button>
+          </div>
         )}
         {sales.length > 0 ? (
           <ul className={styles.salesList}>
             {sales
+              .filter(
+                (sale) =>
+                  (filterClient
+                    ? sale.customer_name
+                        .toLowerCase()
+                        .includes(filterClient.toLowerCase())
+                    : true) &&
+                  (filterProduct
+                    ? sale.product_name
+                        .toLowerCase()
+                        .includes(filterProduct.toLowerCase())
+                    : true) &&
+                  (filterPaymentStatus
+                    ? sale.payment_status
+                        .toLowerCase()
+                        .includes(filterPaymentStatus.toLowerCase())
+                    : true)
+              )
+              .sort((a, b) => {
+                const dateA = new Date(a.data_hour).getTime();
+                const dateB = new Date(b.data_hour).getTime();
+                return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+              })
               .map((sale) => (
                 <li key={sale.id} className={styles.saleItem}>
                   <input
@@ -178,7 +329,10 @@ const Sales: React.FC = () => {
                     onChange={() => handleSelectedSales(sale.id)}
                     className={styles.checkbox}
                   />
-                  <label htmlFor={`saleId-${sale.id}`} className={styles.checkboxLabel}></label>
+                  <label
+                    htmlFor={`saleId-${sale.id}`}
+                    className={styles.checkboxLabel}
+                  ></label>
                   <div>
                     <strong>Produto:</strong> {sale.product_name}
                   </div>
@@ -190,16 +344,15 @@ const Sales: React.FC = () => {
                     <strong>Quantidade:</strong> {sale.quantity}
                   </div>
                   <div>
-                    <strong>Cliente:</strong>
-                    {sale.customer_name}
+                    <strong>Cliente:</strong>{" "}
+                    {<CapitalizeText text={sale.customer_name} />}
                   </div>
                   <div>
-                    <strong>Data:</strong>{" "}
-                    {formatDate(sale.data_hour)}
+                    <strong>Data:</strong> {formatDate(sale.data_hour)}
                   </div>
                   <div>
                     <strong>Status do Pagamento:</strong>{" "}
-                    {toCapitalize(sale.payment_status)}
+                    {<CapitalizeText text={sale.payment_status} />}
                   </div>
                   <div>
                     <strong>Total:</strong> R$

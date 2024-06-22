@@ -27,8 +27,6 @@ const Login: React.FC = () => {
       if (user) {
         setIsLoggedIn(true);
         setToken(user.access);
-        localStorage.setItem("message", "Login realizado com sucesso");
-        localStorage.setItem("type", "success");
         localStorage.setItem("token", user.access);
         navigate("/");
       } else {

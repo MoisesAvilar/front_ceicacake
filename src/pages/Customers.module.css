@@ -11,10 +11,11 @@
   margin-bottom: 1em;
   position: sticky;
   top: 0;
-  background-color: var(--white_transparent);
+  background-color: var(--white);
   padding: 0.5em;
   border-bottom: 1px solid var(--black);
   color: var(--black);
+  z-index: 100;
 }
 
 .customersList {
@@ -29,6 +30,12 @@
   padding: 1em;
   margin-bottom: 1em;
   background-color: var(--white_transparent);
+}
+
+.customerItem:hover {
+  background-color: #e3e3e3;
+  transform: scale(1.01);
+  transition: all 0.3s ease-in-out;
 }
 
 .customerItem div {

@@ -8,6 +8,7 @@ import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
 
 import styles from "./Customers.module.css";
+import CapitalizeText from "../components/CapitalizeText";
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -125,7 +126,7 @@ const Customers: React.FC = () => {
                       to={`/customer/${customer.id}`}
                       className={styles.link}
                     >
-                      {customer.name}
+                      {<CapitalizeText text={customer.name}/>}
                     </Link>
                   </strong>
                 </div>

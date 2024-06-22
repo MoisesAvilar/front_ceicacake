@@ -11,10 +11,61 @@
   margin-bottom: 1em;
   position: sticky;
   top: 0;
-  background-color: var(--white_transparent);
+  background-color: var(--white);
   padding: 0.5em;
   border-bottom: 1px solid var(--black);
   color: var(--black);
+  z-index: 100;
+}
+
+.buttonContainer .filterButton {
+  border: 1px solid var(--black);
+  color: var(--black);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  position: sticky;
+  top: 100px;
+  padding: 1em;
+  background-color: var(--white_transparent);
+  border: 1px solid var(--black);
+  border-radius: 5px;
+  margin-bottom: 1em;
+  z-index: 200;
+}
+
+.filters label {
+  flex: 1 0 100%;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: var(--black);
+}
+
+.filters select {
+  flex: 1 0 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9em; /* Reduzir o tamanho da fonte para dispositivos móveis */
+  margin-right: 0.5em; /* Espaço entre selects */
+  margin-bottom: 0.5em;
+}
+
+.filterButton {
+  padding: 0.5em;
+  background-color: var(--button_color); /* Defina a cor desejada */
+  color: var(--white);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em; /* Reduzir o tamanho da fonte para dispositivos móveis */
+}
+
+.filterButton:hover {
+  background-color: var(--button_hover_color); /* Defina a cor de hover desejada */
 }
 
 .salesList {
@@ -102,7 +153,8 @@
   color: var(--white);
 }
 
-.deleteSales {
+.deleteSales,
+.markAsPaid {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,6 +165,10 @@
   margin: 0 auto;
   width: 90vw;
   z-index: 100;
+}
+
+.markAsPaid {
+  bottom: 50px;
 }
 
 .link {
