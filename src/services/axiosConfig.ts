@@ -15,6 +15,9 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem("token");
       history.push("/login");
       window.location.reload();
+    } else {
+      // Adicionar logs para outros erros
+      console.error('Erro na resposta da API:', error.response);
     }
     return Promise.reject(error);
   }

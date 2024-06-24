@@ -1,9 +1,8 @@
-import { format, parseISO } from "date-fns";
 import React, { useEffect, useState, useRef } from "react";
+import { format, parseISO } from "date-fns";
 import { BASE_URL } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
-
 import styles from "./Sales.module.css";
 import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
@@ -11,7 +10,7 @@ import CapitalizeText from "../components/CapitalizeText";
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
-  const [selectedSales, setSelectedSales] = useState<Set<string>>(new Set());
+  const [selectedSales, setSelectedSales] = useState<Set<number>>(new Set());
   const [message, setMessage] = useState<MessageProps>({
     msg: "",
     type: "success",
@@ -29,9 +28,8 @@ const Sales: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const filterRef = useRef<HTMLDivElement>(null); // Ref para o elemento de filtro
+  const filterRef = useRef<HTMLDivElement>(null);
 
-  // Função para fechar o filtro quando clicar fora dele
   const handleClickOutside = (event: MouseEvent) => {
     if (
       filterRef.current &&
@@ -42,10 +40,10 @@ const Sales: React.FC = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside); // Adiciona o event listener no documento
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Remove o event listener ao desmontar o componente
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -111,7 +109,6 @@ const Sales: React.FC = () => {
         setMessage({ msg: "", type: "success" });
       }, 3000);
     } catch (error) {
-      console.log("Erro ao excluir a venda:", error);
       setMessage({ msg: "Erro ao excluir a venda", type: "error" });
       setTimeout(() => {
         setMessage({ msg: "", type: "success" });
@@ -147,7 +144,6 @@ const Sales: React.FC = () => {
         setMessage({ msg: "", type: "success" });
       }, 3000);
     } catch (error) {
-      console.log("Erro ao excluir as vendas:", error);
       setMessage({ msg: "Erro ao excluir as vendas.", type: "error" });
       setTimeout(() => {
         setMessage({ msg: "", type: "success" });
@@ -155,7 +151,67 @@ const Sales: React.FC = () => {
     }
   };
 
-  const handleSelectedSales = (id: string) => {
+  const handleUpdateSelectedSalesStatus = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    for (let saleId of selectedSales) {
+      try {
+        const response = await axiosInstance.get(
+          `${BASE_URL}/sales/${saleId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const saleData = response.data;
+        const updatedSale = {
+          ...saleData,
+          payment_status: "PAGO",
+        };
+
+        await axiosInstance.patch(`${BASE_URL}/sales/${saleId}`, updatedSale, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setMessage({
+          msg:
+            selectedSales.size === 1
+              ? "Venda atualizada com sucesso"
+              : "Vendas atualizadas com sucesso",
+          type: "info",
+        });
+
+        setTimeout(() => {
+          setMessage({ msg: "", type: "success" });
+        }, 3000);
+      } catch (error) {
+        setMessage({
+          msg:
+            selectedSales.size === 1
+              ? "Erro ao atualizar a venda"
+              : "Erro ao atualizar as vendas",
+          type: "error",
+        });
+
+        setTimeout(() => {
+          setMessage({ msg: "", type: "success" });
+        }, 3000);
+      }
+    }
+
+    getSales(token);
+    setSelectedSales(new Set());
+  };
+
+  const handleSelectedSales = (id: number) => {
     setSelectedSales((prevSelectedSales) => {
       const newSelectedSales = new Set(prevSelectedSales);
       if (newSelectedSales.has(id)) {
@@ -178,7 +234,6 @@ const Sales: React.FC = () => {
   };
 
   useEffect(() => {
-    // Função para obter opções únicas de um campo em um array de vendas
     const getUniqueOptions = (sales: any[], field: string): string[] => {
       const uniqueOptions = sales.reduce((acc: string[], sale) => {
         if (sale[field] && !acc.includes(sale[field])) {
@@ -189,13 +244,12 @@ const Sales: React.FC = () => {
       return uniqueOptions;
     };
 
-    // Atualiza estados com opções únicas
     if (sales.length > 0) {
       setUniqueClients(getUniqueOptions(sales, "customer_name"));
       setUniqueProducts(getUniqueOptions(sales, "product_name"));
       setUniquePaymentStatus(getUniqueOptions(sales, "payment_status"));
     }
-  }, [sales]); // Dependência sales para atualizar quando as vendas mudarem
+  }, [sales]);
 
   return (
     <>
@@ -218,7 +272,6 @@ const Sales: React.FC = () => {
           </div>
         </div>
 
-        {/* Filtros dentro do container principal */}
         {showFilters && (
           <div ref={filterRef} className={styles.filters}>
             <label htmlFor="filterClient">Filtrar por Cliente:</label>
@@ -271,24 +324,35 @@ const Sales: React.FC = () => {
               Ordenar por Data {sortDirection === "asc" ? "↓" : "↑"}
             </button>
 
-            {/* Renderização da lista de vendas ou mensagem de não há vendas */}
             {sales.length > 0 ? (
-              <ul className={styles.salesList}>
-                {/* Mapeamento das vendas */}
-              </ul>
+              <ul className={styles.salesList}></ul>
             ) : (
               <p>Não há vendas cadastradas ainda.</p>
             )}
           </div>
         )}
 
-        {selectedSales.size > 1 && (
+        {selectedSales.size >= 1 && (
           <div>
             <button
               onClick={handleDeleteSelectedSales}
               className={`${styles.delete} ${styles.button} ${styles.deleteSales}`}
             >
-              Excluir {selectedSales.size} Venda(s)
+              Excluir {selectedSales.size}{" "}
+              {selectedSales.size === 1 ? "venda" : "vendas"}
+            </button>
+          </div>
+        )}
+        {selectedSales.size >= 1 && (
+          <div>
+            <button
+              onClick={handleUpdateSelectedSalesStatus}
+              className={`${styles.edit} ${styles.button} ${styles.updateSales}`}
+            >
+              Atualizar {selectedSales.size}{" "}
+              {selectedSales.size === 1
+                ? "venda como paga"
+                : "vendas como pagas"}
             </button>
           </div>
         )}
@@ -319,7 +383,7 @@ const Sales: React.FC = () => {
                 return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
               })
               .map((sale) => (
-                <li key={sale.id} className={styles.saleItem}>
+                <li key={sale.id} className={styles.saleItem} onClick={() => handleSelectedSales(sale.id)}>
                   <input
                     type="checkbox"
                     name="saleId"
