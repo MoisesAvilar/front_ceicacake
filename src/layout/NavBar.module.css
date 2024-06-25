@@ -17,7 +17,7 @@
 
 .navList {
   display: flex;
-  gap: 1rem;
+  gap: .2rem;
   list-style-type: none;
   margin-top: 0.5em;
   padding: 0;
@@ -27,6 +27,21 @@
   display: flex;
   align-items: center;
 }
+
+.navList .navItem a, 
+.navList .navItem a {
+  padding: 0.5em .7em;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.navList .navItem a:hover,
+.navList .navItem a:hover {
+  text-decoration: underline;
+  background-color: var(--pink_border);
+  color: white;
+}
+
 
 .logoutButton {
   color: var(--white);
