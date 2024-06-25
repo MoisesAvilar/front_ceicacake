@@ -6,22 +6,21 @@
   list-style: none;
 }
 
-a {
-  color: var(--golden);
-}
-
 :root {
-  --back_color: #282c34;
+  --back_color: #dadada;
   --back_container_color: #2f3136;
   --white: #fff;
   --black: #000;
-  --white_transparent: #ffffffb8;
-  --pink: #D62A8F;
+  --white_transparent: #dfdfdf;
+  --purple: #9900CC;
+  --pink: #FA3F90;
+  --yellow: #F9C608;
+  --gray: #808080;
   --pink_border: #d62a8e89;
   --blue: #2BC8D6;
   --golden: #D6BF2B;
   --salmon: #824569;
-  --gray: #3D5557;
+  --gray: #808080;
   --button_delete_color: #ff6b6b;
   --button_edit_color: #4caf50;
   --button_edit_hover_color: #45a049;
@@ -30,8 +29,9 @@ a {
   --info: #0c5460;
 }
 
-body {
-  background-color: var(--back_color);
+body,
+html {
+  background-color: var(--gray);
   color: var(--white);
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

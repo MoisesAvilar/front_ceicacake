@@ -3,8 +3,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1em auto;
+  margin-top: 1em;
   text-align: center;
+  background-color: var(--gray);
 }
 
 .nav .logo {
@@ -32,14 +33,14 @@
 .navList .navItem a {
   padding: 0.5em .7em;
   border-radius: 8px;
-  transition: background-color 0.3s, color 0.3s;
+  color: white;
+  transition: background-color 0.3s;
 }
 
 .navList .navItem a:hover,
 .navList .navItem a:hover {
   text-decoration: underline;
-  background-color: var(--pink_border);
-  color: white;
+  background-color: var(--purple);
 }
 
 

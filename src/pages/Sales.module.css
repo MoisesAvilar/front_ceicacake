@@ -2,6 +2,7 @@
   padding: 1em;
   width: 100%;
   margin: 0 auto;
+  background-color: var(--gray);
 }
 
 .header {
@@ -16,6 +17,10 @@
   border-bottom: 1px solid var(--black);
   color: var(--black);
   z-index: 100;
+}
+
+.header h2 {
+  color: var(--purple);
 }
 
 .buttonContainer .filterButton {
@@ -80,7 +85,7 @@
 }
 
 .saleItem {
-  border: 1px solid #ccc;
+  border: 1px solid #999999;
   border-radius: 5px;
   padding: 1em;
   margin-bottom: 1em;
@@ -88,7 +93,7 @@
 }
 
 .saleItem:hover {
-  background-color: #e3e3e3;
+  background-color: var(--white);
   transform: scale(1.01);
   transition: all 0.3s ease-in-out;
 
@@ -149,13 +154,15 @@
 }
 
 .button.delete {
-  background-color: var(--button_delete_color);
+  background-color: var(--purple);
   color: var(--white);
+  border: 1px solid var(--white);
 }
 
 .button.edit {
-  background-color: var(--button_edit_color);
+  background-color: var(--purple);
   color: var(--white);
+  border: 1px solid var(--white);
 }
 
 .deleteSales {

@@ -1,53 +1,56 @@
-h3 {
+.pageContainer {
   display: flex;
   justify-content: center;
-  font-size: 1em;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 2em;
-  color: var(--white);
-}
-
-.contentContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 2em;
-  margin: 2em auto;
-  padding: 1em;
-  width: 350px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.saleContainer,
-.customerContainer {
-  display: flex;
-  flex-direction: column;
   align-items: center;
+  min-height: 100vh;
+  padding: 1em;
+  background-color: var(--gray);
 }
 
-.title {
-  font-size: 1.8em;
+.cardContainer {
+  display: grid;
+  gap: 2em;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.card {
+  background-color: #dadada;
+  padding: 2em;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+  font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 1em;
-  color: var(--white);
-  border-bottom: 2px solid var(--pink);
-  padding-bottom: 0.3em;
+  color: var(--purple);
+  border-bottom: 3px solid var(--pink);
+  padding-bottom: 0.5em;
 }
 
-.saleContainer a, 
-.customerContainer a {
+.cardLink {
+  display: block;
   font-size: 1.2em;
   text-decoration: none;
   margin: 0.5em 0;
-  padding: 0.5em 1em;
+  padding: 0.75em 1em;
   border-radius: 8px;
-  transition: background-color 0.3s, color 0.3s;
+  color: var(--white);
+  background-color: var(--purple);
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.saleContainer a:hover,
-.customerContainer a:hover {
-  text-decoration: underline;
-  background-color: var(--pink_border);
-  color: white;
+.cardLink:hover {
+  background-color: var(--pink);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

@@ -383,7 +383,11 @@ const Sales: React.FC = () => {
                 return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
               })
               .map((sale) => (
-                <li key={sale.id} className={styles.saleItem} onClick={() => handleSelectedSales(sale.id)}>
+                <li
+                  key={sale.id}
+                  className={styles.saleItem}
+                  onClick={() => handleSelectedSales(sale.id)}
+                >
                   <input
                     type="checkbox"
                     name="saleId"
@@ -415,8 +419,18 @@ const Sales: React.FC = () => {
                     <strong>Data:</strong> {formatDate(sale.data_hour)}
                   </div>
                   <div>
-                    <strong>Status do Pagamento:</strong>{" "}
-                    {<CapitalizeText text={sale.payment_status} />}
+                    <strong>Pagamento:</strong>{" "}
+                    <span
+                      style={{
+                        backgroundColor:
+                          sale.payment_status === "PAGO" ? "green" : "red",
+                        color: "white",
+                        padding: "5px 5px",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      <CapitalizeText text={sale.payment_status} />
+                    </span>
                   </div>
                   <div>
                     <strong>Total:</strong> R$

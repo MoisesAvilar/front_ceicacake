@@ -20,10 +20,10 @@ const Home: React.FC = () => {
     if (!token) {
       navigate("/login");
     }
-  });
+  }, [navigate]);
 
   useEffect(() => {
-    if (greeting) {;
+    if (greeting) {
       setMessage({ msg: greeting, type: "success" });
       setTimeout(() => {
         setMessage({ msg: "", type: "success" });
@@ -32,21 +32,21 @@ const Home: React.FC = () => {
   }, [greeting]);
 
   return (
-    <>
-      <div className={styles.contentContainer}>
-        {message.msg && <Message msg={message.msg} type={message.type} />}
-        <div className={styles.saleContainer}>
-          <p className={styles.title}>Vendas</p>
-          <Link to="/sales">Visualizar vendas</Link>
-          <Link to="/sales/new">Registrar nova venda</Link>
+    <div className={styles.pageContainer}>
+      {message.msg && <Message msg={message.msg} type={message.type} />}
+      <div className={styles.cardContainer}>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Vendas</h2>
+          <Link to="/sales" className={styles.cardLink}>Visualizar vendas</Link>
+          <Link to="/sales/new" className={styles.cardLink}>Registrar nova venda</Link>
         </div>
-        <div className={styles.customerContainer}>
-          <p className={styles.title}>Clientes</p>
-          <Link to="/customers">Visualizar clientes</Link>
-          <Link to="/customer/new">Cadastrar novo cliente</Link>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Clientes</h2>
+          <Link to="/customers" className={styles.cardLink}>Visualizar clientes</Link>
+          <Link to="/customer/new" className={styles.cardLink}>Cadastrar novo cliente</Link>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
