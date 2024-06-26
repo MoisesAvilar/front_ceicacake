@@ -65,18 +65,31 @@
   cursor: pointer;
 }
 
-.button.delete {
+.edit,
+.delete {
   background-color: var(--purple);
   color: var(--white);
   border: 1px solid var(--white);
+  transition: background-color 0.3s;
 }
 
-.button.edit {
-  background-color: var(--purple);
-  color: var(--white);
-  border: 1px solid var(--white);
+.edit:hover,
+.delete:hover {
+  background-color: var(--pink);
 }
 
 .link {
   text-decoration: underline;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    width: 70vw;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .container {
+    width: 50vw;
+  }
 }

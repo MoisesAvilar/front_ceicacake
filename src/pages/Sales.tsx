@@ -33,19 +33,13 @@ const Sales: React.FC = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if (
       filterRef.current &&
-      !filterRef.current.contains(event.target as Node)
+      !filterRef.current.contains(event.target as Node) &&
+      showFilters
     ) {
       setShowFilters(false);
     }
+    event.stopPropagation();
   };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -273,62 +267,65 @@ const Sales: React.FC = () => {
         </div>
 
         {showFilters && (
-          <div ref={filterRef} className={styles.filters}>
-            <label htmlFor="filterClient">Filtrar por Cliente:</label>
-            <select
-              id="filterClient"
-              value={filterClient}
-              onChange={(e) => setFilterClient(e.target.value)}
-            >
-              <option value="">Todos os Clientes</option>
-              {uniqueClients.map((client, index) => (
-                <option key={index} value={client}>
-                  {<CapitalizeText text={client} />}
-                </option>
-              ))}
-            </select>
+          <div className={styles.filterOverlay}></div>
+        )}
 
-            <label htmlFor="filterProduct">Filtrar por Produto:</label>
-            <select
-              id="filterProduct"
-              value={filterProduct}
-              onChange={(e) => setFilterProduct(e.target.value)}
-            >
-              <option value="">Todos os Produtos</option>
-              {uniqueProducts.map((product, index) => (
-                <option key={index} value={product}>
-                  {product}
-                </option>
-              ))}
-            </select>
-
-            <label htmlFor="filterPaymentStatus">
-              Filtrar por Status de Pagamento:
-            </label>
-            <select
-              id="filterPaymentStatus"
-              value={filterPaymentStatus}
-              onChange={(e) => setFilterPaymentStatus(e.target.value)}
-            >
-              <option value="">Todos os Status</option>
-              {uniquePaymentStatus.map((status, index) => (
-                <option key={index} value={status}>
-                  {<CapitalizeText text={status} />}
-                </option>
-              ))}
-            </select>
-            <button
-              className={`${styles.button} ${styles.edit}`}
-              onClick={handleSortByDate}
-            >
-              Ordenar por Data {sortDirection === "asc" ? "↓" : "↑"}
-            </button>
-
-            {sales.length > 0 ? (
-              <ul className={styles.salesList}></ul>
-            ) : (
-              <p>Não há vendas cadastradas ainda.</p>
-            )}
+        {showFilters && (
+          <div className={styles.filtersContainer}>
+            <div ref={filterRef} className={styles.filters}>
+              <label htmlFor="filterClient">Filtrar por Cliente:</label>
+              <select
+                id="filterClient"
+                value={filterClient}
+                onChange={(e) => setFilterClient(e.target.value)}
+              >
+                <option value="">Todos os Clientes</option>
+                {uniqueClients.map((client, index) => (
+                  <option key={index} value={client}>
+                    {<CapitalizeText text={client} />}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="filterProduct">Filtrar por Produto:</label>
+              <select
+                id="filterProduct"
+                value={filterProduct}
+                onChange={(e) => setFilterProduct(e.target.value)}
+              >
+                <option value="">Todos os Produtos</option>
+                {uniqueProducts.map((product, index) => (
+                  <option key={index} value={product}>
+                    {product}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="filterPaymentStatus">
+                Filtrar por Status de Pagamento:
+              </label>
+              <select
+                id="filterPaymentStatus"
+                value={filterPaymentStatus}
+                onChange={(e) => setFilterPaymentStatus(e.target.value)}
+              >
+                <option value="">Todos os Status</option>
+                {uniquePaymentStatus.map((status, index) => (
+                  <option key={index} value={status}>
+                    {<CapitalizeText text={status} />}
+                  </option>
+                ))}
+              </select>
+              <button
+                className={`${styles.button} ${styles.edit}`}
+                onClick={handleSortByDate}
+              >
+                Ordenar por Data {sortDirection === "asc" ? "↓" : "↑"}
+              </button>
+              {sales.length > 0 ? (
+                <ul className={styles.salesList}></ul>
+              ) : (
+                <p>Não há vendas cadastradas ainda.</p>
+              )}
+            </div>
           </div>
         )}
 
@@ -351,8 +348,8 @@ const Sales: React.FC = () => {
             >
               Atualizar {selectedSales.size}{" "}
               {selectedSales.size === 1
-                ? "venda como paga"
-                : "vendas como pagas"}
+                ? "item como pago"
+                : "itens como pago"}
             </button>
           </div>
         )}

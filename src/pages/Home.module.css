@@ -54,3 +54,15 @@
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+@media only screen and (min-width: 768px) {
+  .cardContainer {
+    width: 70vw;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .cardContainer {
+    width: 50vw;
+  }
+}

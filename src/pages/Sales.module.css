@@ -28,6 +28,21 @@
   color: var(--black);
 }
 
+.filterOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.filtersContainer {
+  position: relative;
+  z-index: 100; 
+}
+
 .filters {
   display: flex;
   position: absolute;
@@ -43,9 +58,8 @@
   border: 1px solid var(--black);
   border-radius: 5px;
   margin-bottom: 1em;
-  z-index: 200;
+  z-index: 100;
 }
-
 
 .filters label {
   flex: 1 0 100%;
@@ -59,14 +73,14 @@
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 0.9em; 
-  margin-right: 0.5em; 
+  font-size: 0.9em;
+  margin-right: 0.5em;
   margin-bottom: 0.5em;
 }
 
 .filterButton {
   padding: 0.5em;
-  background-color: var(--button_color); 
+  background-color: var(--button_color);
   color: var(--white);
   border: none;
   border-radius: 5px;
@@ -75,7 +89,7 @@
 }
 
 .filterButton:hover {
-  background-color: var(--button_hover_color); 
+  background-color: var(--button_hover_color);
 }
 
 .salesList {
@@ -96,7 +110,6 @@
   background-color: var(--white);
   transform: scale(1.01);
   transition: all 0.3s ease-in-out;
-
 }
 
 .saleItem div {
@@ -153,16 +166,17 @@
   cursor: pointer;
 }
 
-.button.delete {
-  background-color: var(--purple);
-  color: var(--white);
-  border: 1px solid var(--white);
+ .edit:hover,
+ .delete:hover {
+  background-color: var(--pink);
 }
 
-.button.edit {
+.edit,
+.delete {
   background-color: var(--purple);
   color: var(--white);
   border: 1px solid var(--white);
+  transition: background-color 0.3s;
 }
 
 .deleteSales {
@@ -198,4 +212,20 @@
 
 .link:hover {
   text-decoration: underline;
+}
+
+@media only screen and (min-width: 768px) {
+  .container,
+  .updateSales,
+  .deleteSales {
+    width: 70vw;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .container,
+  .updateSales,
+  .deleteSales {
+    width: 50vw;
+  }
 }
