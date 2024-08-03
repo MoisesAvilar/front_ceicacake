@@ -179,19 +179,13 @@
   transition: background-color 0.3s;
 }
 
-.deleteSales {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 0;
-  margin: 0 auto;
-  width: 90vw;
-  z-index: 100;
+.edit svg,
+.delete svg {
+  margin-right: 5px;
+  vertical-align: text-top;
 }
 
+.deleteSales,
 .updateSales {
   display: flex;
   justify-content: center;
@@ -199,10 +193,27 @@
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 50px;
   margin: 0 auto;
   width: 90vw;
   z-index: 100;
+}
+
+.deleteSales {
+  bottom: 0;
+  background-color: var(--delete);
+}
+
+.deleteSales:hover {
+  background-color: red;
+}
+
+.updateSales {
+  bottom: 50px;
+  background-color: var(--button_edit_color);
+}
+
+.updateSales:hover {
+  background-color: green;
 }
 
 .link {

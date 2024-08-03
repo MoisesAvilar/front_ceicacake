@@ -73,6 +73,13 @@
   transition: background-color 0.3s;
 }
 
+.edit svg,
+.delete svg {
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+
+
 .edit:hover,
 .delete:hover {
   background-color: var(--pink);

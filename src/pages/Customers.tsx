@@ -9,6 +9,7 @@ import { MessageProps } from "../types/messageTypes";
 
 import styles from "./Customers.module.css";
 import CapitalizeText from "../components/CapitalizeText";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -147,13 +148,13 @@ const Customers: React.FC = () => {
                     to={`/customer/${customer.id}`}
                     className={`${styles.button} ${styles.edit}`}
                   >
-                    Editar
+                    <FaEdit />Editar
                   </Link>
                   <button
                     onClick={() => handleDeleteCustomer(customer.id)}
                     className={`${styles.button} ${styles.delete}`}
                   >
-                    Excluir
+                    <FaTrash />Excluir
                   </button>
                 </div>
               </li>

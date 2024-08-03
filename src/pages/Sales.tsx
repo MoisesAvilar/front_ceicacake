@@ -7,6 +7,7 @@ import styles from "./Sales.module.css";
 import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
 import CapitalizeText from "../components/CapitalizeText";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
@@ -348,8 +349,8 @@ const Sales: React.FC = () => {
             >
               Atualizar {selectedSales.size}{" "}
               {selectedSales.size === 1
-                ? "item como pago"
-                : "itens como pago"}
+                ? "item"
+                : "itens"}
             </button>
           </div>
         )}
@@ -438,13 +439,13 @@ const Sales: React.FC = () => {
                       onClick={() => navigate(`/sales/${sale.id}`)}
                       className={`${styles.edit} ${styles.button}`}
                     >
-                      Editar
+                      <FaEdit />Editar
                     </button>
                     <button
                       onClick={() => handleDeleteSale(sale.id)}
                       className={`${styles.delete} ${styles.button}`}
                     >
-                      Excluir
+                      <FaTrash />Excluir
                     </button>
                   </div>
                 </li>
