@@ -31,17 +31,6 @@ const Sales: React.FC = () => {
 
   const filterRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      filterRef.current &&
-      !filterRef.current.contains(event.target as Node) &&
-      showFilters
-    ) {
-      setShowFilters(false);
-    }
-    event.stopPropagation();
-  };
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -260,7 +249,8 @@ const Sales: React.FC = () => {
           <div className={styles.buttonContainer}>
             <button
               className={styles.filterButton}
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setShowFilters(!showFilters)
+              }
             >
               {showFilters ? "Fechar Filtro" : "Filtrar"}
             </button>
