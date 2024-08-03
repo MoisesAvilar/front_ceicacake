@@ -16,7 +16,6 @@ axiosInstance.interceptors.response.use(
       history.push("/login");
       window.location.reload();
     } else {
-      // Adicionar logs para outros erros
       console.error('Erro na resposta da API:', error.response);
     }
     return Promise.reject(error);
