@@ -112,7 +112,7 @@ const Customers: React.FC = () => {
         {message.msg && <Message msg={message.msg} type={message.type} />}
         <div className={styles.header}>
           <h2>Clientes</h2>
-          <Link to="/customer/new" className={styles.link}>
+          <Link to="/customer/new" className={styles.newCustomer}>
             Cadastrar cliente
           </Link>
         </div>

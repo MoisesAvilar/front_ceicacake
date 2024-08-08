@@ -87,6 +87,16 @@
 
 .link {
   text-decoration: underline;
+  color: var(--purple);
+}
+
+.newCustomer {
+  text-decoration: none;
+  color: var(--blue);
+}
+
+.newCustomer:hover {
+  text-decoration: underline;
 }
 
 @media only screen and (min-width: 768px) {
