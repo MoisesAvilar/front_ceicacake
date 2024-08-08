@@ -1,5 +1,6 @@
 export const Products = [
   { value: "TORTA", label: "Torta" },
+  { value: "BROWNIE", label: "Brownie" },
   { value: "BRASINHA_COMUM", label: "Brasinha comum" },
   { value: "BRASINHA_GOURMET", label: "Brasinha gourmet" },
   { value: "BOLO_DE_POTE_P", label: "Bolo de pote P" },
