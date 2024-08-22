@@ -8,5 +8,6 @@ export const Products = [
   { value: "BOLO_VULCAO_P", label: "Bolo vulcão P" },
   { value: "BOLO_VULCAO_M", label: "Bolo vulcão M" },
   { value: "BOLO_VULCAO_G", label: "Bolo vulcão G" },
+  { value: "COPO_DA_FELICIDADE", label: "Copo da felicidade" },
   { value: "BOLO_DE_ANIVERSARIO", label: "Bolo de aniversário" },
 ];
