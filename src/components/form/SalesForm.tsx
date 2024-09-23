@@ -1,4 +1,3 @@
-// src/components/form/SalesForm.tsx
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +18,7 @@ const SalesForm: React.FC = () => {
     customer: "",
     payment_status: "",
   });
-  const [products, setProducts] = useState<Product[]>([]); // Use o tipo Product
+  const [products, setProducts] = useState<Product[]>([]);
 
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
@@ -154,11 +153,7 @@ const SalesForm: React.FC = () => {
           <option value="" disabled hidden>
             Selecione um produto
           </option>
-          {products.map((product) => (
-            <option key={product.value} value={product.value}>
-              {product.label}
-            </option>
-          ))}
+          <Products products={products} />
         </select>
         <label htmlFor="price" className={styles.label}>
           Preço
