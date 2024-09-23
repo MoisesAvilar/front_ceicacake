@@ -1,12 +1,13 @@
+// src/components/form/SalesForm.tsx
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
-
-import CustomersName from "../../services/customersName";
-import { Products } from "../../services/products";
 import { SalesTypes } from "../../types/salesTypes";
 import { PaymentStatus } from "../../services/payment_status";
+import Products from "../../services/products";
+import CustomersName from "../../services/customersName";
+import { Product } from "../../services/productTypes"
 
 import styles from "./Form.module.css";
 
@@ -18,10 +19,34 @@ const SalesForm: React.FC = () => {
     customer: "",
     payment_status: "",
   });
+  const [products, setProducts] = useState<Product[]>([]); // Use o tipo Product
 
   const { id } = useParams<{ id: string }>();
   const isEditing = !!id;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const response = await axiosInstance.get<Product[]>(`${BASE_URL}/products/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProducts(response.data);
+      } catch (error) {
+        console.log("Erro ao obter produtos:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [navigate]);
 
   useEffect(() => {
     if (isEditing) {
@@ -99,7 +124,7 @@ const SalesForm: React.FC = () => {
       );
       localStorage.setItem(
         "message",
-        `Ocorreu um erro ao {isEditing ? 'atualizar' : 'cadastrar'} a venda:`
+        `Ocorreu um erro ao ${isEditing ? 'atualizar' : 'cadastrar'} a venda:`
       );
       localStorage.setItem("type", "error");
     }
@@ -122,14 +147,14 @@ const SalesForm: React.FC = () => {
           name="product"
           id="product"
           value={sales.product}
-          onChange={(e) => setSales({ ...sales, product: e.target.value })}
+          onChange={handleChange}
           required
           className={styles.select}
         >
-          <option value="" disabled selected hidden>
+          <option value="" disabled hidden>
             Selecione um produto
           </option>
-          {Products.map((product) => (
+          {products.map((product) => (
             <option key={product.value} value={product.value}>
               {product.label}
             </option>
@@ -172,7 +197,7 @@ const SalesForm: React.FC = () => {
           required
           className={styles.select}
         >
-          <option value="" disabled selected hidden>
+          <option value="" disabled hidden>
             Selecione um cliente
           </option>
           <CustomersName />
@@ -188,7 +213,7 @@ const SalesForm: React.FC = () => {
           required
           className={styles.select}
         >
-          <option value="" disabled selected hidden>
+          <option value="" disabled hidden>
             Selecione o status
           </option>
           {PaymentStatus.map((status) => (

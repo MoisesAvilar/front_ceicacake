@@ -1,13 +1,19 @@
-export const Products = [
-  { value: "TORTA", label: "Torta" },
-  { value: "BROWNIE", label: "Brownie" },
-  { value: "BRASINHA_COMUM", label: "Brasinha comum" },
-  { value: "BRASINHA_GOURMET", label: "Brasinha gourmet" },
-  { value: "BOLO_DE_POTE_P", label: "Bolo de pote P" },
-  { value: "BOLO_DE_POTE_G", label: "Bolo de pote G" },
-  { value: "BOLO_VULCAO_P", label: "Bolo vulcão P" },
-  { value: "BOLO_VULCAO_M", label: "Bolo vulcão M" },
-  { value: "BOLO_VULCAO_G", label: "Bolo vulcão G" },
-  { value: "COPO_DA_FELICIDADE", label: "Copo da felicidade" },
-  { value: "BOLO_DE_ANIVERSARIO", label: "Bolo de aniversário" },
-];
+import React from 'react';
+
+interface ProductProps {
+  products: { value: string; label: string }[];
+}
+
+const Products: React.FC<ProductProps> = ({ products }) => {
+  return (
+    <>
+      {products.map(product => (
+        <option key={product.value} value={product.value}>
+          {product.label}
+        </option>
+      ))}
+    </>
+  );
+};
+
+export default Products;
