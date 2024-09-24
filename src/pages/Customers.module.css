@@ -12,7 +12,7 @@
   margin-bottom: 1em;
   position: sticky;
   top: 0;
-  background-color: var(--white);
+  background-color: var(--purple);
   padding: 0.5em;
   border-bottom: 1px solid var(--black);
   color: var(--black);
@@ -20,7 +20,7 @@
 }
 
 .header h2 {
-  color: var(--purple);
+  color: var(--white);
 }
 
 .customersList {
