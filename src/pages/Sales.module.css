@@ -24,8 +24,8 @@
 }
 
 .buttonContainer .filterButton {
-  border: 1px solid var(--black);
-  color: var(--black);
+  border: 1px solid var(--white);
+  color: var(--white);
 }
 
 .filterOverlay {
@@ -180,7 +180,11 @@
   transition: background-color 0.3s;
 }
 
-.edit svg,
+.edit svg {
+  margin-right: 5px;
+  vertical-align: baseline;
+}
+
 .delete svg {
   margin-right: 5px;
   vertical-align: text-top;
@@ -218,8 +222,8 @@
 }
 
 .link {
-  text-decoration: none;
-  color: #007bff;
+  text-decoration: underline;
+  color: var(--white);
 }
 
 .link:hover {

@@ -73,12 +73,15 @@
   transition: background-color 0.3s;
 }
 
-.edit svg,
+.edit svg {
+  margin-right: 5px;
+  vertical-align: baseline;
+}
+
 .delete svg {
   margin-right: 5px;
   vertical-align: text-top;
 }
-
 
 .edit:hover,
 .delete:hover {
@@ -91,12 +94,8 @@
 }
 
 .newCustomer {
-  text-decoration: none;
-  color: var(--blue);
-}
-
-.newCustomer:hover {
   text-decoration: underline;
+  color: var(--white);
 }
 
 @media only screen and (min-width: 768px) {
