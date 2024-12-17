@@ -98,10 +98,10 @@ const CustomerForm: React.FC = () => {
     <form onSubmit={handleSubmit} className={styles.form}>
       <fieldset className={styles.fieldset}>
         <legend className={styles.legend}>
-          {isEditing ? "Editar Cliente" : "Cadastro de Clientes"}
+          {isEditing ? "Editar Cliente" : "Cadastrar Cliente"}
         </legend>
         <label htmlFor="name" className={styles.label}>
-          {isEditing ? "Nome" : "Nome *"}
+          {isEditing ? "Nome" : "Nome*"}
         </label>
         <input
           type="text"

@@ -21,9 +21,20 @@
 }
 
 .label {
-  margin-top: 10px;
-  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   font-weight: bold;
+}
+
+.addCustomer {
+  display: inline-flex;
+  align-items: center;
+  font-weight: lighter;
+  color: var(--white);
+  margin-left: auto;
+  font-size: 25px;
 }
 
 .input,
@@ -33,6 +44,11 @@
   border: 1px solid var(--gray);
   border-radius: 4px;
   font-size: 16px;
+}
+
+.input:hover,
+.select:hover {
+  border: 1px solid var(--black);
 }
 
 .button {
@@ -75,4 +91,18 @@
   color: var(--gray);
 }
 
+@media only screen and (min-width: 768px) {
+  .fieldset {
+    width: 70vw;
+  }
 
+  .legend {
+    font-size: 30px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .fieldset {
+    width: 50vw;
+  }
+}

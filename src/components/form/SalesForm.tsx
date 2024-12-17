@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../services/api";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
 import { SalesTypes } from "../../types/salesTypes";
 import { PaymentStatus } from "../../services/payment_status";
 import Products from "../../services/products";
 import CustomersName from "../../services/customersName";
-import { Product } from "../../services/productTypes"
+import { Product } from "../../services/productTypes";
+import { FaUserPlus } from "react-icons/fa";
 
 import styles from "./Form.module.css";
 
@@ -183,6 +184,9 @@ const SalesForm: React.FC = () => {
         />
         <label htmlFor="customer" className={styles.label}>
           Cliente
+          <Link to="/customer/new" className={styles.addCustomer}>
+            <FaUserPlus />
+          </Link>
         </label>
         <select
           name="customer"
