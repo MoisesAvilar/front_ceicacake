@@ -1,0 +1,29 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1em;
+  position: sticky;
+  top: -1px;
+  background-color: var(--purple);
+  padding: 0.5em;
+  border-bottom: 1px solid var(--black);
+  color: var(--black);
+  z-index: 100;
+}
+
+h2 {
+  text-align: center;
+  color: var(--white);
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+}

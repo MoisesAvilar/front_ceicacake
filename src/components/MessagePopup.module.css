@@ -8,7 +8,7 @@
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    display: none; /* Inicialmente oculto */
+    display: none;
   }
   
   .message-popup.success {
@@ -20,7 +20,7 @@
   }
   
   .message-popup.show {
-    display: block; /* Exibe quando a classe .show é aplicada */
+    display: block;
   }
   
   .message-content {

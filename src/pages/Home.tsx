@@ -45,6 +45,10 @@ const Home: React.FC = () => {
           <Link to="/customers" className={styles.cardLink}>Visualizar clientes</Link>
           <Link to="/customer/new" className={styles.cardLink}>Cadastrar novo cliente</Link>
         </div>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Gráficos de vendas</h2>
+          <Link to="/sales/chart" className={styles.cardLink}>Visualizar gráficos</Link>
+        </div>
       </div>
     </div>
   );

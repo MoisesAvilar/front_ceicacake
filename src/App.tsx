@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./services/Login";
 import Sales from "./pages/Sales";
 import SalesForm from "./components/form/SalesForm";
+import Dashboard from "./pages/Dashboard";
 
 import NavBar from "./layout/NavBar";
 import Customers from "./pages/Customers";
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/sales" element={<Sales />} />
           <Route path="/sales/new" element={<SalesForm />} />
           <Route path="/sales/:id" element={<SalesForm />} />
+          <Route path="/sales/chart" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/customer/new" element={<CustomerForm />} />
           <Route path="/customer/:id" element={<CustomerForm />} />

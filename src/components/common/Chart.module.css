@@ -1,0 +1,20 @@
+.chartContainer {
+  position: relative;
+  width: 95%;
+  height: 400px;   margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;  }
+
+.mainChartWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;   width: 100%; }
+
+.chartWithFilter {
+  width: 100%; }
+
+.chartWithFilter .periodSelector {
+  width: 100%; }
