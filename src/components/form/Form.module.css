@@ -93,7 +93,7 @@
 
 @media only screen and (min-width: 768px) {
   .fieldset {
-    width: 70vw;
+    width: 70%;
   }
 
   .legend {
@@ -103,6 +103,6 @@
 
 @media only screen and (min-width: 1024px) {
   .fieldset {
-    width: 50vw;
+    width: 50%;
   }
 }

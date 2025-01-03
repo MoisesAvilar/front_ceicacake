@@ -15,7 +15,7 @@ interface SalesData {
 const SalesByPeriodChart: React.FC = () => {
   const [salesData, setSalesData] = useState<SalesData[]>([]);
   const [products, setProducts] = useState<{ value: string; label: string }[]>([]);
-  const [period, setPeriod] = useState({ startDate: '2024-01-01', endDate: '2024-12-31' });
+  const [period, setPeriod] = useState({ startDate: '', endDate: '' });
 
   useEffect(() => {
     fetchProducts().then((productData) => {
@@ -92,13 +92,11 @@ const SalesByPeriodChart: React.FC = () => {
 
             if (datasetIndex === 0 && typeof value === 'number') {
               return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
-            } else if (datasetIndex === 1 && typeof value === 'number' && value == 1) {
+            } else if (datasetIndex === 1 && typeof value === 'number' && value === 1) {
               return `${value} unidade`;
             } else {
               return `${value} unidades`;
             }
-
-            return '';
           },
         },
       },
