@@ -11,7 +11,6 @@ const SalesByClientChart: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-
     const getCustomersData = async () => {
       try {
         const customers = await fetchCustomers();
@@ -26,29 +25,25 @@ const SalesByClientChart: React.FC = () => {
   }, []);
 
   useEffect(() => {
-
     if (customersData.length === 0) return;
   
     const getSalesData = async () => {
       try {
         const sales = await fetchSalesByClient();
         console.log('Vendas carregadas:', sales);
-  
 
         const updatedSalesData = sales.map((item: any) => ({
           ...item,
           customer_name: item.customer__name || 'Cliente Desconhecido',
         }));
-  
+
         console.log('Dados de vendas atualizados:', updatedSalesData);
-  
 
         const colors = updatedSalesData.map((_, index) => {
-
           const hue = (index * 360 / updatedSalesData.length) % 360;
           return `hsl(${hue}, 70%, 50%)`;
         });
-  
+
         setSalesData({
           labels: updatedSalesData.map((item: any) => item.customer_name),
           datasets: [
@@ -67,7 +62,7 @@ const SalesByClientChart: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     getSalesData();
   }, [customersData]);
   
@@ -91,14 +86,10 @@ const SalesByClientChart: React.FC = () => {
       tooltip: {
         callbacks: {
           label: (tooltipItem: TooltipItem<'pie'>) => {
-            const value = tooltipItem.raw;
-  
-
-            if (typeof value === 'number') {
-              return `R$${value.toFixed(2)}`;
-            }
-  
-            return '';
+            const value = tooltipItem.raw as number;
+            const total = tooltipItem.dataset.data.reduce((acc: number, curr: number) => acc + curr, 0);
+            const percentage = ((value / total) * 100).toFixed(1); 
+            return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} (${percentage}%)`;
           },
         },
         titleFont: {

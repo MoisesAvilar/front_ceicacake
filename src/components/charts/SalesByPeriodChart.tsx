@@ -4,7 +4,7 @@ import { fetchSalesByPeriod } from '../../services/salesService';
 import PeriodSelector from '../PeriodSelector';
 import { fetchProducts } from '../../services/salesService';
 import { TooltipItem } from 'chart.js';
-import styles from '../common/Chart.module.css'
+import styles from '../common/Chart.module.css';
 
 interface SalesData {
   product: string;
@@ -18,7 +18,6 @@ const SalesByPeriodChart: React.FC = () => {
   const [period, setPeriod] = useState({ startDate: '2024-01-01', endDate: '2024-12-31' });
 
   useEffect(() => {
-
     fetchProducts().then((productData) => {
       setProducts(productData);
     });
@@ -26,7 +25,6 @@ const SalesByPeriodChart: React.FC = () => {
 
   useEffect(() => {
     fetchSalesByPeriod(period.startDate, period.endDate).then((data) => {
-      console.log(data);
       setSalesData(data);
     });
   }, [period]);
@@ -35,6 +33,8 @@ const SalesByPeriodChart: React.FC = () => {
     setPeriod({ startDate, endDate });
   };
 
+  const totalSales = salesData.reduce((sum, sale) => sum + sale.total_sales, 0);
+  const totalUnits = salesData.reduce((sum, sale) => sum + sale.quantity_sold, 0);
 
   const chartData = {
     labels: salesData.map((sale) => {
@@ -57,7 +57,7 @@ const SalesByPeriodChart: React.FC = () => {
         borderWidth: 1,
         type: 'line' as 'line',
       },
-    ], 
+    ],
   };
 
   const options = {
@@ -67,7 +67,7 @@ const SalesByPeriodChart: React.FC = () => {
     plugins: {
       title: {
         display: true,
-        text: 'Vendas por Produto',
+        text: 'Vendas por Período',
         font: {
           size: 24,
           weight: 'bold',
@@ -87,13 +87,17 @@ const SalesByPeriodChart: React.FC = () => {
         },
         callbacks: {
           label: (tooltipItem: TooltipItem<'line'>) => {
+            const datasetIndex = tooltipItem.datasetIndex;
             const value = tooltipItem.raw;
-  
 
-            if (typeof value === 'number') {
-              return `R$${value.toFixed(2)}`;
+            if (datasetIndex === 0 && typeof value === 'number') {
+              return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
+            } else if (datasetIndex === 1 && typeof value === 'number' && value == 1) {
+              return `${value} unidade`;
+            } else {
+              return `${value} unidades`;
             }
-  
+
             return '';
           },
         },
@@ -112,12 +116,24 @@ const SalesByPeriodChart: React.FC = () => {
   };
 
   return (
-    <div className={styles.mainChartWrapper}> {}
-    <div className={styles.chartWithFilter}>
-      <PeriodSelector onChange={handlePeriodChange} /> {}
-      <Chart type="line" data={chartData} options={options} />
+    <div className={styles.mainChartWrapper}>
+      <div className={styles.chartWithFilter}>
+        <PeriodSelector onChange={handlePeriodChange} />
+        <div className={styles.totals}>
+          <p>
+            <span className={styles["totals-icon"]}>💰</span>
+            <strong>Total Vendido:</strong> R$
+            {new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(totalSales)}
+          </p>
+          <p>
+            <span className={styles["totals-icon"]}>📦</span>
+            <strong>Quantidade Total:</strong> {totalUnits} unidades
+          </p>
+        </div>
+
+        <Chart type="line" data={chartData} options={options} />
+      </div>
     </div>
-  </div>
   );
 };
 

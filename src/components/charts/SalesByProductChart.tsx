@@ -4,13 +4,23 @@ import { fetchSalesByProduct } from '../../services/salesService';
 import { fetchProducts } from '../../services/salesService';
 import { TooltipItem } from 'chart.js';
 
+interface SalesData {
+  product: string;
+  total_sales: number;
+  quantity_sold: number;
+}
+
+interface Product {
+  value: string;
+  label: string;
+}
+
 const SalesByProductChart: React.FC = () => {
-  const [salesData, setSalesData] = useState<any>(null);
-  const [products, setProducts] = useState<any[]>([]);
+  const [salesData, setSalesData] = useState<{ labels: string[]; datasets: any[] } | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isProductsLoaded, setIsProductsLoaded] = useState(false);
 
   useEffect(() => {
-
     fetchProducts()
       .then((data) => {
         if (Array.isArray(data)) {
@@ -27,34 +37,37 @@ const SalesByProductChart: React.FC = () => {
 
   useEffect(() => {
     if (isProductsLoaded) {
-
       fetchSalesByProduct()
         .then((data) => {
           if (Array.isArray(data) && data.length > 0) {
-            setSalesData({
-              labels: data.map((item) => {
-
-                const product = products.find((p) => p.value === item.product);
-                return product ? product.label : item.product;
-              }),
-              datasets: [
-                {
-                  label: 'Vendas por Produto',
-                  data: data.map((item) => item.total_sales),
-                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                  borderColor: 'rgba(75, 192, 192, 1)',
-                  borderWidth: 1,
-                },
-                {
-                  label: 'Quantidade Vendida',
-                  data: data.map((item) => item.quantity_sold),
-                  backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                  borderColor: 'rgba(255, 159, 64, 1)',
-                  borderWidth: 1,
-                  type: 'line',
-                },
-              ],
+            const labels = data.map((item: SalesData) => {
+              const product = products.find((p) => p.value === item.product);
+              return product ? product.label : item.product;
             });
+
+            const backgroundColor = data.map((item: SalesData, index: number) => {
+              return index % 2 === 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 159, 64, 0.2)'; // Cor alternada para cada produto
+            });
+
+            const datasets = [
+              {
+                label: 'Vendas por Produto',
+                data: data.map((item: SalesData) => item.total_sales),
+                backgroundColor,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+              },
+              {
+                label: 'Quantidade Vendida',
+                data: data.map((item: SalesData) => item.quantity_sold),
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1,
+                type: 'line',
+              },
+            ];
+
+            setSalesData({ labels, datasets });
           } else {
             console.error('Dados inválidos para vendas por produto', data);
           }
@@ -86,12 +99,17 @@ const SalesByProductChart: React.FC = () => {
       tooltip: {
         callbacks: {
           label: (tooltipItem: TooltipItem<'bar' | 'line'>) => {
+            const datasetIndex = tooltipItem.datasetIndex;
             const value = tooltipItem.raw;
+            const label = tooltipItem.label;
             if (typeof value === 'number') {
-              if (tooltipItem.datasetIndex === 0) {
-                return `R$${value.toFixed(2)}`;
+              if (datasetIndex === 0) {
+                return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
+              } else if (value === 1) {
+                return `${label}: ${value} unidade`;
+              } else {
+                return `${label}: ${value} unidades`; 
               }
-              return `${value} unidades`;
             }
             return '';
           },

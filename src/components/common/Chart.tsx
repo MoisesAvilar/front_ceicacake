@@ -64,7 +64,7 @@ const Chart: React.FC<ChartProps> = ({ type, data, options }) => {
     }
   };
 
-  return <div className={styles.chartContainer}>  {/* Usando o estilo com camelCase */}
+  return <div className={styles.chartContainer}>
     {renderChart()}
   </div>;
 };
