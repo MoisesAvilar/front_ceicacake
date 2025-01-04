@@ -13,6 +13,7 @@ O objetivo deste frontend é oferecer uma interface amigável e intuitiva para o
 - **Autenticação de Usuário**: Login e logout utilizando a API de autenticação JWT.
 - **Cadastro de Novos Clientes e Vendas**: Interface simples para adicionar novos clientes e registrar vendas.
 - **Atualização de Dados**: Edite e atualize informações de clientes e vendas conforme necessário.
+- **Gráficos**: Permite visualizar dados de vendas de forma personalizada.
 
 ## Tecnologias Utilizadas
 
@@ -30,8 +31,11 @@ O objetivo deste frontend é oferecer uma interface amigável e intuitiva para o
 - `/login`: Página de autenticação do usuário.
 - `/customers`: Listagem de todos os clientes.
 - `/customers/:id`: Detalhes e edição de um cliente específico.
+- `/customers/new`: Formulário para registrar novos clientes.
 - `/sales`: Listagem de todas as vendas.
 - `/sales/new`: Formulário para registrar uma nova venda.
+- `/sales/:id`: Detalhes e edição de uma venda específica.
+- `/sales/chart`: Gráficos para visualização de métricas e detalhes do sistema. 
 
 ## Contribuição
 Contribuições são bem-vindas! Sinta-se à vontade para abrir um problema ou enviar um pull request. Toda ajuda é apreciada para melhorar e expandir as funcionalidades deste projeto.
