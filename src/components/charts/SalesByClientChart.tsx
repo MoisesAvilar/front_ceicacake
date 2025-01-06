@@ -26,7 +26,7 @@ const SalesByClientChart: React.FC = () => {
 
   useEffect(() => {
     if (customersData.length === 0) return;
-  
+
     const getSalesData = async () => {
       try {
         const sales = await fetchSalesByClient();
@@ -40,7 +40,7 @@ const SalesByClientChart: React.FC = () => {
         console.log('Dados de vendas atualizados:', updatedSalesData);
 
         const colors = updatedSalesData.map((_, index) => {
-          const hue = (index * 360 / updatedSalesData.length) % 360;
+          const hue = (index * 360) / updatedSalesData.length % 360;
           return `hsl(${hue}, 70%, 50%)`;
         });
 
@@ -65,7 +65,7 @@ const SalesByClientChart: React.FC = () => {
 
     getSalesData();
   }, [customersData]);
-  
+
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>{error}</div>;
 
@@ -86,10 +86,23 @@ const SalesByClientChart: React.FC = () => {
       tooltip: {
         callbacks: {
           label: (tooltipItem: TooltipItem<'pie'>) => {
+            const chart = tooltipItem.chart;
+
+            const visibleData = chart.data.datasets[0].data.filter((_, index) => {
+              const legendItem = chart.legend?.legendItems?.[index];
+              return legendItem && !legendItem.hidden;
+            }) as number[]; // Garante que `visibleData` é um array de números
+
             const value = tooltipItem.raw as number;
-            const total = tooltipItem.dataset.data.reduce((acc: number, curr: number) => acc + curr, 0);
-            const percentage = ((value / total) * 100).toFixed(1); 
-            return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)} (${percentage}%)`;
+            const total = visibleData.reduce((acc: number, curr: number) => acc + curr, 0); // Soma corretamente
+
+            if (total === 0) return 'Nenhuma venda visível'; // Evita divisão por zero
+
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `R$${new Intl.NumberFormat('pt-BR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(value)} (${percentage}%)`;
           },
         },
         titleFont: {
@@ -97,6 +110,17 @@ const SalesByClientChart: React.FC = () => {
         },
         bodyFont: {
           size: 18,
+        },
+      },
+      legend: {
+        onClick: (
+          e: React.MouseEvent<HTMLCanvasElement>,
+          legendItem: any,
+          legend: any
+        ) => {
+          const chart = legend.chart;
+          chart.toggleDataVisibility(legendItem.index);
+          chart.update();
         },
       },
     },

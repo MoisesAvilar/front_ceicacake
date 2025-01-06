@@ -46,7 +46,7 @@ const SalesByProductChart: React.FC = () => {
             });
 
             const backgroundColor = data.map((item: SalesData, index: number) => {
-              return index % 2 === 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 159, 64, 0.2)'; // Cor alternada para cada produto
+              return index % 2 === 0 ? 'rgba(75, 192, 192, 0.2)' : 'rgba(255, 159, 64, 0.2)';
             });
 
             const datasets = [
@@ -106,9 +106,9 @@ const SalesByProductChart: React.FC = () => {
               if (datasetIndex === 0) {
                 return `R$${new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}`;
               } else if (value === 1) {
-                return `${label}: ${value} unidade`;
+                return `${value} unidade`;
               } else {
-                return `${label}: ${value} unidades`; 
+                return `${value} unidades`; 
               }
             }
             return '';
