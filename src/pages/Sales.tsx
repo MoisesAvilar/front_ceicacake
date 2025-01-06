@@ -424,6 +424,10 @@ const Sales: React.FC = () => {
                     <strong>Total:</strong> R$
                     {sale.total.toFixed(2).replace(".", ",")}
                   </div>
+                  <div>
+                    <strong>Registrado por:</strong>
+                    <CapitalizeText text={sale.user_name || "ceicacake"} />
+                  </div>
                   <div className={styles.saleActions}>
                     <button
                       onClick={() => navigate(`/sales/${sale.id}`)}
