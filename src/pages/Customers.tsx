@@ -69,7 +69,7 @@ const Customers: React.FC = () => {
     }
 
     try {
-      await axiosInstance.delete(`${BASE_URL}/customers/${id}`, {
+      await axiosInstance.delete(`${BASE_URL}/customers/${id}/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

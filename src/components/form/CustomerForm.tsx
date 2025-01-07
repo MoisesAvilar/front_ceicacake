@@ -70,7 +70,7 @@ const CustomerForm: React.FC = () => {
 
     try {
       if (isEditing) {
-        await axiosInstance.put(`${BASE_URL}/customers/${id}`, customer, {
+        await axiosInstance.put(`${BASE_URL}/customers/${id}/`, customer, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
