@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SalesByProductChart from "../components/charts/SalesByProductChart";
 import SalesByClientChart from "../components/charts/SalesByClientChart";
 import SalesByPeriodChart from "../components/charts/SalesByPeriodChart";
 import styles from './Dashboard.module.css';
 
 const DashboardPage: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <>
       <div className={styles.container}>

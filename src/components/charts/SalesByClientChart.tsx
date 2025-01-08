@@ -14,7 +14,6 @@ const SalesByClientChart: React.FC = () => {
     const getCustomersData = async () => {
       try {
         const customers = await fetchCustomers();
-        console.log('Clientes carregados:', customers);
         setCustomersData(customers);
       } catch (error) {
         setError('Erro ao buscar dados de clientes');
@@ -30,14 +29,10 @@ const SalesByClientChart: React.FC = () => {
     const getSalesData = async () => {
       try {
         const sales = await fetchSalesByClient();
-        console.log('Vendas carregadas:', sales);
-
         const updatedSalesData = sales.map((item: any) => ({
           ...item,
           customer_name: item.customer__name || 'Cliente Desconhecido',
         }));
-
-        console.log('Dados de vendas atualizados:', updatedSalesData);
 
         const colors = updatedSalesData.map((_, index) => {
           const hue = (index * 360) / updatedSalesData.length % 360;

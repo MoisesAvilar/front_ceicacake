@@ -15,18 +15,32 @@ interface SalesData {
 const SalesByPeriodChart: React.FC = () => {
   const [salesData, setSalesData] = useState<SalesData[]>([]);
   const [products, setProducts] = useState<{ value: string; label: string }[]>([]);
-  const [period, setPeriod] = useState({ startDate: '', endDate: '' });
+  const [period, setPeriod] = useState({ startDate: '2024-03-06', endDate: '' });
 
   useEffect(() => {
     fetchProducts().then((productData) => {
       setProducts(productData);
     });
+
+    const today = new Date();
+    const formattedEndDate = today.toISOString().split('T')[0];
+
+    setPeriod((prevPeriod) => ({
+      ...prevPeriod,
+      endDate: formattedEndDate,
+    }));
+
+    fetchSalesByPeriod('2024-03-06', formattedEndDate).then((data) => {
+      setSalesData(data);
+    });
   }, []);
 
   useEffect(() => {
-    fetchSalesByPeriod(period.startDate, period.endDate).then((data) => {
-      setSalesData(data);
-    });
+    if (period.startDate && period.endDate) {
+      fetchSalesByPeriod(period.startDate, period.endDate).then((data) => {
+        setSalesData(data);
+      });
+    }
   }, [period]);
 
   const handlePeriodChange = (startDate: string, endDate: string) => {
