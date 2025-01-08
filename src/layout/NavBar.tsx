@@ -28,7 +28,7 @@ function NavBar() {
         {localStorage.getItem("token") && (
           <li className={styles.navItem}>
             <button onClick={handleLogout} className={styles.logoutButton}>
-              Logout
+              Sair
             </button>
           </li>
         )}

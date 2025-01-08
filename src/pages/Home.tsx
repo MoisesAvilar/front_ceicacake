@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 
-import { Greeting } from "../services/getTime";
 import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
 
@@ -12,7 +11,6 @@ const Home: React.FC = () => {
     type: "success",
   });
 
-  const greeting = Greeting();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,15 +19,6 @@ const Home: React.FC = () => {
       navigate("/login");
     }
   }, [navigate]);
-
-  useEffect(() => {
-    if (greeting) {
-      setMessage({ msg: greeting, type: "success" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 5000);
-    }
-  }, [greeting]);
 
   return (
     <div className={styles.pageContainer}>
