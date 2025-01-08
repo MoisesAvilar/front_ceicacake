@@ -12,6 +12,7 @@ const CustomerForm: React.FC = () => {
     name: "",
     phone_number: null,
     birthday: null,
+    debt: 0.0,
     bought: 0.0,
   });
 
@@ -34,7 +35,7 @@ const CustomerForm: React.FC = () => {
 
     try {
       const response = await axiosInstance.get<CustomerTypes>(
-        `${BASE_URL}/customers/${id}`,
+        `${BASE_URL}/customers/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -133,6 +134,17 @@ const CustomerForm: React.FC = () => {
           id="birthday"
           name="birthday"
           value={customer.birthday || ""}
+          onChange={handleChange}
+          className={styles.input}
+        />
+        <label htmlFor="debt" className={styles.label}>
+          Dívida
+        </label>
+        <input
+          type="number"
+          id="debt"
+          name="debt"
+          value={customer.debt}
           onChange={handleChange}
           className={styles.input}
         />

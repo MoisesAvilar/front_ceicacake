@@ -140,7 +140,11 @@ const Customers: React.FC = () => {
                   {formatDate(customer.birthday)}
                 </div>
                 <div>
-                  <strong>Compras:</strong>
+                  <strong>Dívida:</strong>
+                  R${customer.debt.toFixed(2).replace(".", ",")}
+                </div>
+                <div>
+                  <strong>Total em Compras:</strong>
                   R${customer.bought.toFixed(2).replace(".", ",")}
                 </div>
                 <div className={styles.customerActions}>
