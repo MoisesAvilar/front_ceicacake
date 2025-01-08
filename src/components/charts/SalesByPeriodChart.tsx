@@ -17,27 +17,26 @@ const SalesByPeriodChart: React.FC = () => {
   const [products, setProducts] = useState<{ value: string; label: string }[]>([]);
   const [period, setPeriod] = useState({ startDate: '2024-03-06', endDate: '' });
 
+  const adjustEndDate = (date: string) => {
+    const adjusted = new Date(date);
+    adjusted.setDate(adjusted.getDate() + 1);
+    return adjusted.toISOString().split("T")[0];
+  };
+
   useEffect(() => {
-    fetchProducts().then((productData) => {
-      setProducts(productData);
-    });
+    fetchProducts().then((productData) => setProducts(productData));
 
     const today = new Date();
     const formattedEndDate = today.toISOString().split('T')[0];
+    setPeriod({ startDate: '2024-03-06', endDate: formattedEndDate });
 
-    setPeriod((prevPeriod) => ({
-      ...prevPeriod,
-      endDate: formattedEndDate,
-    }));
-
-    fetchSalesByPeriod('2024-03-06', formattedEndDate).then((data) => {
-      setSalesData(data);
-    });
+    fetchSalesByPeriod('2024-03-06', formattedEndDate).then((data) => setSalesData(data));
   }, []);
 
   useEffect(() => {
     if (period.startDate && period.endDate) {
-      fetchSalesByPeriod(period.startDate, period.endDate).then((data) => {
+      const adjustedEndDate = adjustEndDate(period.endDate);
+      fetchSalesByPeriod(period.startDate, adjustedEndDate).then((data) => {
         setSalesData(data);
       });
     }
