@@ -159,6 +159,11 @@
   align-items: center;
 }
 
+.customerLink {
+  text-decoration: underline;
+  color: var(--purple);
+}
+
 .button {
   padding: 0.5em 1em;
   font-size: 1em;

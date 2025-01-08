@@ -400,8 +400,11 @@ const Sales: React.FC = () => {
                     <strong>Quantidade:</strong> {sale.quantity}
                   </div>
                   <div>
-                    <strong>Cliente:</strong>{" "}
-                    {<CapitalizeText text={sale.customer_name} />}
+                    <strong>Cliente:{" "}
+                    <Link to={`/customer/${sale.customer}/`} className={styles.customerLink}>
+                      <CapitalizeText text={sale.customer_name} />
+                    </Link>
+                    </strong>
                   </div>
                   <div>
                     <strong>Data:</strong> {formatDate(sale.data_hour)}
