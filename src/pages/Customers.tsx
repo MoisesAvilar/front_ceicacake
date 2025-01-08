@@ -6,6 +6,7 @@ import axiosInstance from "../services/axiosConfig";
 
 import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
+import Loading from "../components/Loading";
 
 import styles from "./Customers.module.css";
 import CapitalizeText from "../components/CapitalizeText";
@@ -17,6 +18,7 @@ const Customers: React.FC = () => {
     msg: "",
     type: "success",
   });
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,6 +56,8 @@ const Customers: React.FC = () => {
       setCustomers(response.data);
     } catch (error) {
       console.error("Ocorreu um erro ao buscar clientes:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -88,10 +92,6 @@ const Customers: React.FC = () => {
     }
   };
 
-  if (!customers) {
-    return <div>Carregando</div>;
-  }
-
   const formatPhoneNumber = (phoneNumber: string | null) => {
     if (!phoneNumber) return "N/A";
     return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(
@@ -107,68 +107,65 @@ const Customers: React.FC = () => {
   };
 
   return (
-    <>
-      <div className={styles.container}>
-        {message.msg && <Message msg={message.msg} type={message.type} />}
-        <div className={styles.header}>
-          <h2>Clientes</h2>
-          <Link to="/customer/new" className={styles.newCustomer}>
-            Cadastrar cliente
-          </Link>
-        </div>
-        {customers.length > 0 ? (
-          <ul className={styles.customersList}>
-            {customers.map((customer) => (
-              <li key={customer.id} className={styles.customerItem}>
-                <div>
-                  <strong>Nome:</strong>
-                  <strong>
-                    <Link
-                      to={`/customer/${customer.id}`}
-                      className={styles.link}
-                    >
-                      {<CapitalizeText text={customer.name}/>}
-                    </Link>
-                  </strong>
-                </div>
-                <div>
-                  <strong>Telefone:</strong>
-                  {formatPhoneNumber(customer.phone_number)}
-                </div>
-                <div>
-                  <strong>Data de Nascimento:</strong>
-                  {formatDate(customer.birthday)}
-                </div>
-                <div>
-                  <strong>Dívida:</strong>
-                  R${customer.debt.toFixed(2).replace(".", ",")}
-                </div>
-                <div>
-                  <strong>Total em Compras:</strong>
-                  R${customer.bought.toFixed(2).replace(".", ",")}
-                </div>
-                <div className={styles.customerActions}>
-                  <Link
-                    to={`/customer/${customer.id}`}
-                    className={`${styles.button} ${styles.edit}`}
-                  >
-                    <FaEdit />Editar
-                  </Link>
-                  <button
-                    onClick={() => handleDeleteCustomer(customer.id)}
-                    className={`${styles.button} ${styles.delete}`}
-                  >
-                    <FaTrash />Excluir
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Não há clientes cadastrados ainda.</p>
-        )}
+    <div className={styles.container}>
+      {message.msg && <Message msg={message.msg} type={message.type} />}
+      <div className={styles.header}>
+        <h2>Clientes</h2>
+        <Link to="/customer/new" className={styles.newCustomer}>
+          Cadastrar cliente
+        </Link>
       </div>
-    </>
+      {loading ? (
+        <Loading />
+      ) : customers.length > 0 ? (
+        <ul className={styles.customersList}>
+          {customers.map((customer) => (
+            <li key={customer.id} className={styles.customerItem}>
+              <div>
+                <strong>Nome:</strong>
+                <strong>
+                  <Link to={`/customer/${customer.id}`} className={styles.link}>
+                    <CapitalizeText text={customer.name} />
+                  </Link>
+                </strong>
+              </div>
+              <div>
+                <strong>Telefone:</strong>
+                {formatPhoneNumber(customer.phone_number)}
+              </div>
+              <div>
+                <strong>Data de Nascimento:</strong>
+                {formatDate(customer.birthday)}
+              </div>
+              <div>
+                <strong>Dívida:</strong>
+                R${customer.debt.toFixed(2).replace(".", ",")}
+              </div>
+              <div>
+                <strong>Total em Compras:</strong>
+                R${customer.bought.toFixed(2).replace(".", ",")}
+              </div>
+              <div className={styles.customerActions}>
+                <Link
+                  to={`/customer/${customer.id}`}
+                  className={`${styles.button} ${styles.edit}`}
+                >
+                  <FaEdit /> Editar
+                </Link>
+                <button
+                  onClick={() => handleDeleteCustomer(customer.id)}
+                  className={`${styles.button} ${styles.delete}`}
+                >
+                  <FaTrash /> Excluir
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <h2>Não há clientes cadastrados ainda.</h2>
+      )}
+    </div>
   );
 };
 

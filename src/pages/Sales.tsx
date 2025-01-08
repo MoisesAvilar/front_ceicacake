@@ -8,6 +8,7 @@ import Message from "../layout/Message";
 import { MessageProps } from "../types/messageTypes";
 import CapitalizeText from "../components/CapitalizeText";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import Loading from "../components/Loading";
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
@@ -26,6 +27,7 @@ const Sales: React.FC = () => {
   const [uniqueProducts, setUniqueProducts] = useState<string[]>([]);
   const [uniquePaymentStatus, setUniquePaymentStatus] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
@@ -66,6 +68,8 @@ const Sales: React.FC = () => {
       setSales(response.data);
     } catch (error) {
       console.log("Ocorreu um erro:", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -344,7 +348,9 @@ const Sales: React.FC = () => {
             </button>
           </div>
         )}
-        {sales.length > 0 ? (
+        {loading ? (
+          <Loading />
+        ) : sales.length > 0 ? (
           <ul className={styles.salesList}>
             {sales
               .filter(
@@ -450,7 +456,7 @@ const Sales: React.FC = () => {
               .reverse()}
           </ul>
         ) : (
-          <p>Não há vendas cadastradas ainda.</p>
+          <h2>Não há vendas cadastradas ainda.</h2>
         )}
       </div>
     </>
