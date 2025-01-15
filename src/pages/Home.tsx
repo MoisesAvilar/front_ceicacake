@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Home.module.css";
 
-import Message from "../layout/Message";
-import { MessageProps } from "../types/messageTypes";
-
 const Home: React.FC = () => {
-  const [message, setMessage] = useState<MessageProps>({
-    msg: "",
-    type: "success",
-  });
+
 
   const navigate = useNavigate();
 
@@ -22,7 +16,6 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
-      {message.msg && <Message msg={message.msg} type={message.type} />}
       <div className={styles.cardContainer}>
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>Fluxo de Caixa</h2>

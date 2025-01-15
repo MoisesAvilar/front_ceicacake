@@ -8,6 +8,7 @@ import { CashflowTypes } from "../types/cashflowTypes";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import Message from "../layout/Message";
+import Loading from "../components/Loading";
 
 const Cashflow: React.FC = () => {
   const [cashflowData, setCashflowData] = useState<CashflowTypes[]>([]);
@@ -16,12 +17,13 @@ const Cashflow: React.FC = () => {
     msg: "",
     type: "success",
   });
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("message");
     const storedType = localStorage.getItem("type");
-  
+
     if (storedMessage && storedType) {
       setMessage({
         msg: storedMessage,
@@ -30,14 +32,13 @@ const Cashflow: React.FC = () => {
       localStorage.removeItem("message");
       localStorage.removeItem("type");
     }
-  
+
     const timer = setTimeout(() => {
       setMessage({ msg: "", type: "success" });
     }, 3000);
-  
+
     return () => clearTimeout(timer);
   }, []);
-  
 
   useEffect(() => {
     const fetchCashflowData = async () => {
@@ -52,6 +53,8 @@ const Cashflow: React.FC = () => {
       } catch (err) {
         setError("Falha ao buscar os dados de fluxo de caixa.");
         setMessage({ msg: "Erro ao buscar dados de fluxo de caixa.", type: "error" });
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -72,54 +75,59 @@ const Cashflow: React.FC = () => {
           Registrar Novo
         </Link>
       </div>
-      <div className={styles.content}>
-        {cashflowData.length > 0 && (
-          <div className={styles.cardContainer}>
-            {cashflowData
-              .map((item, index) => (
-                <div key={index} className={styles.card}>
-                  <div className={styles.cardItem}>
-                    <strong>Categoria:</strong>{" "}
-                    <CapitalizeText text={item.category} />
+
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <div className={styles.error}>{error}</div>
+      ) : (
+        <div className={styles.content}>
+          {cashflowData.length > 0 ? (
+            <div className={styles.cardContainer}>
+              {cashflowData
+                .map((item, index) => (
+                  <div key={index} className={styles.card}>
+                    <div className={styles.cardItem}>
+                      <strong>Categoria:</strong>{" "}
+                      <CapitalizeText text={item.category} />
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Tipo:</strong>{" "}
+                      {item.value_type === "EXPENSE" ? "Gasto" : "Lucro"}
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Valor:</strong> R${Number(item.value).toFixed(2).replace(".", ",")}
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Data de Registro:</strong> {formatDate(item.date)}
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Descrição:</strong>{" "}
+                      <CapitalizeText text={item.description || "Sem descricao"} />
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Atualizado em:</strong> {formatDate(item.updated_at)}
+                    </div>
+                    <div className={styles.cardItem}>
+                      <strong>Criado em:</strong> {formatDate(item.created_at)}
+                    </div>
+                    <div className={styles.cashflowActions}>
+                      <button
+                        onClick={() => navigate(`/cashflow/${item.id}`)}
+                        className={`${styles.edit} ${styles.button}`}
+                      >
+                        <FaEdit /> Editar
+                      </button>
+                    </div>
                   </div>
-                  <div className={styles.cardItem}>
-                    <strong>Tipo:</strong>{" "}
-                    {item.value_type === "EXPENSE" ? "Gasto" : "Lucro"}
-                  </div>
-                  <div className={styles.cardItem}>
-                    <strong>Valor:</strong> R${Number(item.value).toFixed(2).replace(".", ",")}
-                  </div>
-                  <div className={styles.cardItem}>
-                    <strong>Data de Registro:</strong>{" "}
-                    {formatDate(item.date)}
-                  </div>
-                  <div className={styles.cardItem}>
-                    <strong>Descrição:</strong>{" "}
-                    <CapitalizeText
-                      text={item.description || "Sem descricao"}
-                    />
-                  </div>
-                  <div className={styles.cardItem}>
-                    <strong>Atualizado em:</strong>{" "}
-                    {formatDate(item.updated_at)}
-                  </div>
-                  <div className={styles.cardItem}>
-                    <strong>Criado em:</strong> {formatDate(item.created_at)}
-                  </div>
-                  <div className={styles.cashflowActions}>
-                    <button
-                      onClick={() => navigate(`/cashflow/${item.id}`)}
-                      className={`${styles.edit} ${styles.button}`}
-                    >
-                      <FaEdit /> Editar
-                    </button>
-                  </div>
-                </div>
-              ))
-              .reverse()}
-          </div>
-        )}
-      </div>
+                ))
+                .reverse()}
+            </div>
+          ) : (
+            <h2>Não há dados de fluxo de caixa.</h2>
+          )}
+        </div>
+      )}
     </div>
   );
 };
