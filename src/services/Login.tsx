@@ -38,7 +38,7 @@ const Login: React.FC = () => {
       const user: IUser | undefined = await getToken(username, password);
       if (user) {
         setIsLoggedIn(true);
-        localStorage.setItem("token", user.access); // Não precisa mais da variável `token`
+        localStorage.setItem("token", user.access);
         navigate("/");
       } else {
         setMessage({
@@ -67,54 +67,55 @@ const Login: React.FC = () => {
   }
 
   return (
-    <>
-      <div className={styles.container}>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          {message.msg && <Message msg={message.msg} type={message.type} />}
-          <fieldset className={styles.fieldset}>
-            <legend className={styles.legend}>Login</legend>
-            <div className={styles.usernameContainer}>
-              <label htmlFor="username" className={styles.label}>Usuário</label>
+    <div className={styles.loginForm}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        {message.msg && <Message msg={message.msg} type={message.type} />}
+        <fieldset className={styles.fieldset}>
+          <legend className={styles.legend}>Login</legend>
+          <div className={styles.usernameContainer}>
+            <label htmlFor="username" className={styles.label}>
+              Usuário
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              className={styles.input}
+              placeholder="Usuário"
+              required
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+          <div className={styles.loginPasswordContainer}>
+            <label htmlFor="password" className={styles.label}>
+              Senha
+            </label>
+            <div className={styles.inputContainer}>
               <input
-                type="text"
-                id="username"
-                value={username}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
                 className={styles.input}
-                placeholder="Usuário"
+                placeholder="Senha"
                 required
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
+              <button
+                type="button"
+                title="Mostrar senha"
+                className={styles.showPasswordButton}
+                onClick={toggleShowPassword}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
-            <div className={styles.passwordContainer}>
-              <label htmlFor="password" className={styles.label}>Senha</label>
-              <div className={styles.inputContainer}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
-                  className={styles.input}
-                  placeholder="Senha"
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  title="Mostrar senha"
-                  className={styles.showPasswordButton}
-                  onClick={toggleShowPassword}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-            </div>
-            <button type="submit" className={styles.button} disabled={loading}>
-              {loading ? "Carregando..." : "Login"}
-            </button>
-          </fieldset>
-          {isLoggedIn && <p>Login bem-sucedido!</p>}
-        </form>
-      </div>
-    </>
+          </div>
+          <button type="submit" className={styles.button} disabled={loading}>
+            {loading ? "Carregando..." : "Login"}
+          </button>
+        </fieldset>
+      </form>
+    </div>
   );
 };
 

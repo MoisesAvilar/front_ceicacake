@@ -14,6 +14,9 @@ import Container from "./components/Container";
 import Footer from "./layout/Footer";
 import NotFound from "./components/notFound";
 
+import Cashflow from "./pages/Cashflow";
+import CashflowForm from "./components/form/CashflowForm";
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -29,6 +32,9 @@ const App: React.FC = () => {
           <Route path="/customers" element={<Customers />} />
           <Route path="/customer/new" element={<CustomerForm />} />
           <Route path="/customer/:id" element={<CustomerForm />} />
+          <Route path="/cashflow" element={<Cashflow />} />
+          <Route path="/cashflow/new" element={<CashflowForm />} />
+          <Route path="/cashflow/:id" element={<CashflowForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />

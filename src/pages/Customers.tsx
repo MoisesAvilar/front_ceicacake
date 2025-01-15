@@ -33,17 +33,22 @@ const Customers: React.FC = () => {
   useEffect(() => {
     const storedMessage = localStorage.getItem("message");
     const storedType = localStorage.getItem("type");
+  
     if (storedMessage && storedType) {
       setMessage({
-        msg: storedMessage as string,
+        msg: storedMessage,
         type: storedType as "success" | "error" | "info",
       });
     }
-    setTimeout(() => {
-      localStorage.removeItem("message");
-      localStorage.removeItem("type");
+
+    localStorage.removeItem("message");
+    localStorage.removeItem("type");
+    
+    const timer = setTimeout(() => {
       setMessage({ msg: "", type: "success" });
     }, 3000);
+  
+    return () => clearTimeout(timer);
   }, []);
 
   async function getAllCustomers(token: string) {

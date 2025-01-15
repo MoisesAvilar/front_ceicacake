@@ -25,6 +25,14 @@ const Home: React.FC = () => {
       {message.msg && <Message msg={message.msg} type={message.type} />}
       <div className={styles.cardContainer}>
         <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Fluxo de Caixa</h2>
+          <Link to="/cashflow" className={styles.cardLink}>Visualizar registros</Link>
+        </div>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>Gráfico de Vendas</h2>
+          <Link to="/sales/chart" className={styles.cardLink}>Visualizar gráficos</Link>
+        </div>
+        <div className={styles.card}>
           <h2 className={styles.cardTitle}>Vendas</h2>
           <Link to="/sales" className={styles.cardLink}>Visualizar vendas</Link>
           <Link to="/sales/new" className={styles.cardLink}>Registrar nova venda</Link>
@@ -33,10 +41,6 @@ const Home: React.FC = () => {
           <h2 className={styles.cardTitle}>Clientes</h2>
           <Link to="/customers" className={styles.cardLink}>Visualizar clientes</Link>
           <Link to="/customer/new" className={styles.cardLink}>Cadastrar novo cliente</Link>
-        </div>
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>Gráfico de Vendas</h2>
-          <Link to="/sales/chart" className={styles.cardLink}>Visualizar gráficos</Link>
         </div>
       </div>
     </div>

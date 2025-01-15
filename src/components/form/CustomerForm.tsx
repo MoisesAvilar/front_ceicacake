@@ -89,7 +89,6 @@ const CustomerForm: React.FC = () => {
       }
       navigate("/customers");
     } catch (error) {
-      console.log("Houve um erro ao registrar o cliente:", error);
       localStorage.setItem("message", "Houve um erro ao registrar o cliente");
       localStorage.setItem("type", "error");
     }

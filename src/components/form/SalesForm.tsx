@@ -63,7 +63,7 @@ const SalesForm: React.FC = () => {
 
     try {
       const response = await axiosInstance.get<SalesTypes>(
-        `${BASE_URL}/sales/${id}`,
+        `${BASE_URL}/sales/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ const SalesForm: React.FC = () => {
 
     try {
       if (isEditing) {
-        await axiosInstance.put(`${BASE_URL}/sales/${id}`, sales, {
+        await axiosInstance.put(`${BASE_URL}/sales/${id}/`, sales, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
