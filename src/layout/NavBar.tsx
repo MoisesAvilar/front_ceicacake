@@ -1,39 +1,52 @@
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import styles from "./NavBar.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
 
 function NavBar() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
+  const { isAuthenticated, logout } = useAuth();
+  
   return (
-    <nav className={styles.nav}>
-      <Link to="/">
-        <img src="/MARCA1.png" alt="logo" className={styles.logo} />
-      </Link>
-      <h6>Administração</h6>
-      <ul className={styles.navList}>
-        <li className={styles.navItem}>
-          <Link to="/">Home</Link>
-        </li>
-        <li className={styles.navItem}>
-          <Link to="/sales">Vendas</Link>
-        </li>
-        <li className={styles.navItem}>
-          <Link to="/customers">Clientes</Link>
-        </li>
-        {localStorage.getItem("token") && (
-          <li className={styles.navItem}>
-            <button onClick={handleLogout} className={styles.logoutButton}>
-              Sair
-            </button>
+    <header className={styles.header}>
+      <nav className={styles.nav}>
+        <NavLink to="/">
+          <img src="/MARCA1.png" alt="logo" className={styles.logo} />
+        </NavLink>
+        
+        <ul className={styles.navList}>
+          <li>
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+            >
+              Home
+            </NavLink>
           </li>
+          <li>
+            <NavLink 
+              to="/sales" 
+              className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+            >
+              Vendas
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="/customers" 
+              className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+            >
+              Clientes
+            </NavLink>
+          </li>
+        </ul>
+
+        {isAuthenticated && (
+          <button onClick={logout} className={styles.logoutButton} title="Sair">
+            <FaSignOutAlt />
+          </button>
         )}
-      </ul>
-    </nav>
+      </nav>
+    </header>
   );
 }
 

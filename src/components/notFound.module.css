@@ -1,0 +1,49 @@
+.notFoundContainer {
+  text-align: center;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 50vh;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.message {
+  font-size: 1em;
+  color: var(--color-text-secondary);
+  max-width: 500px;
+}
+
+.homeLink {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.homeLink:hover {
+  background-color: var(--color-text-primary);
+}
+
+@media (min-width: 768px) {
+  .notFoundContainer {
+    padding: 4rem 2rem;
+  }
+  .title {
+    font-size: 2.5em;
+  }
+  .message {
+    font-size: 1.2em;
+  }
+}

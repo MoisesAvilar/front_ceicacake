@@ -1,68 +1,82 @@
-.pageContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1em;
-  background-color: var(--gray);
+.homeContainer {
+  padding: 1rem;
 }
 
-.cardContainer {
+.mainTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1.5rem;
+  padding-left: 0.5rem;
+  border-left: 4px solid var(--color-primary);
+}
+
+.cardGrid {
   display: grid;
-  gap: 2em;
-  width: 100%;
-  max-width: 1200px;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .card {
-  background-color: #dadada;
-  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background-color: var(--color-surface);
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.cardIcon {
+  font-size: 2.25rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
 }
 
 .cardTitle {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 1em;
-  color: var(--purple);
-  border-bottom: 3px solid var(--pink);
-  padding-bottom: 0.5em;
+  font-size: 1.15rem;
+  font-weight: 600;
 }
 
-.cardLink {
-  display: block;
-  font-size: 1.2em;
-  text-decoration: none;
-  margin: 0.5em 0;
-  padding: 0.75em 1em;
-  border-radius: 8px;
-  color: var(--white);
-  background-color: var(--purple);
-  transition: background-color 0.3s, transform 0.3s;
+.cardDescription {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  flex-grow: 1;
 }
 
-.cardLink:hover {
-  background-color: var(--pink);
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-@media only screen and (min-width: 768px) {
-  .cardContainer {
-    width: 70vw;
+@media (min-width: 768px) {
+  .homeContainer {
+    padding: 2rem;
   }
-}
 
-@media only screen and (min-width: 1024px) {
-  .cardContainer {
-    width: 50vw;
+  .mainTitle {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .cardGrid {
+    gap: 1.5rem;
+  }
+
+  .card {
+    padding: 2rem;
+  }
+
+  .cardIcon {
+    font-size: 2.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1.25rem;
   }
 }

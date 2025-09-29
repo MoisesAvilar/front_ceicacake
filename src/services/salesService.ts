@@ -1,10 +1,12 @@
-
 import axiosInstance from "./axiosConfig";
 
-
-export const fetchSalesByProduct = async (): Promise<any[]> => {
+// FUNÇÃO ATUALIZADA
+export const fetchSalesByProduct = async (startDate: string, endDate: string): Promise<any[]> => {
   try {
-    const response = await axiosInstance.get("/sales-by-product/");
+    // Adicionado o objeto 'params' para enviar as datas à API
+    const response = await axiosInstance.get("/sales-by-product/", {
+      params: { start_date: startDate, end_date: endDate },
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar dados de vendas por produto", error);
@@ -12,10 +14,13 @@ export const fetchSalesByProduct = async (): Promise<any[]> => {
   }
 };
 
-
-export const fetchSalesByClient = async (): Promise<any[]> => {
+// FUNÇÃO ATUALIZADA
+export const fetchSalesByClient = async (startDate: string, endDate: string): Promise<any[]> => {
   try {
-    const response = await axiosInstance.get("/sales-by-client/");
+    // Adicionado o objeto 'params' para enviar as datas à API
+    const response = await axiosInstance.get("/sales-by-client/", {
+      params: { start_date: startDate, end_date: endDate },
+    });
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar dados de vendas por cliente", error);

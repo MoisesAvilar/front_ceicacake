@@ -1,34 +1,27 @@
-.formContainer {
+.wrapper {
   display: flex;
+  align-items: center;
   justify-content: center;
+  min-height: calc(100vh - 140px);
   padding: 1rem;
 }
 
-.form {
-  width: 100%;
-  max-width: 700px;
+.loginCard {
   background-color: var(--color-surface);
+  padding: 2rem 1.5rem;
   border-radius: 12px;
-  padding: 1.5rem;
-}
-
-.fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
+  width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.legend {
+.title {
   font-size: 1.5rem;
   font-weight: 600;
+  text-align: center;
   color: var(--color-text-primary);
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
-  width: 100%;
 }
 
 .inputGroup {
@@ -38,32 +31,49 @@
 }
 
 .label {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text-secondary);
 }
 
-.input,
-.select {
-  width: 100%;
+.input {
   background-color: var(--color-background);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  font-family: 'Inter', sans-serif;
+  width: 100%;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.input:focus,
-.select:focus {
+.input:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(106, 63, 251, 0.3);
 }
 
-.button {
+.passwordContainer {
+  position: relative;
+}
+
+.showPasswordButton {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.showPasswordButton:hover {
+  color: var(--color-text-primary);
+}
+
+.submitButton {
   background-color: var(--color-primary);
   color: #fff;
   font-size: 1rem;
@@ -73,51 +83,33 @@
   padding: 0.875rem;
   width: 100%;
   cursor: pointer;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.button:hover:not(:disabled) {
+.submitButton:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-2px);
 }
 
-.button:disabled {
+.submitButton:disabled {
   background-color: var(--color-surface-light);
   color: var(--color-text-disabled);
   cursor: not-allowed;
   transform: none;
 }
 
-.labelWithAction {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.addCustomerLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-primary);
-  font-size: 0.9rem;
-  transition: color 0.2s ease;
-}
-.addCustomerLink:hover {
-  color: var(--color-primary-hover);
-}
-
-
-@media (min-width: 768px) {
-  .formContainer {
+@media (min-width: 640px) {
+  .wrapper {
     padding: 2rem;
   }
-  .form {
-    padding: 2rem;
+  .loginCard {
+    padding: 2.5rem 2rem;
+    gap: 1.5rem;
     border: 1px solid var(--color-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
-  .legend {
+  .title {
     font-size: 1.75rem;
   }
 }

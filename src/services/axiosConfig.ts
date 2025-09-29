@@ -1,9 +1,5 @@
-
 import axios from "axios";
 import { BASE_URL } from "./api";
-import { createBrowserHistory } from "history";
-
-const history = createBrowserHistory();
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -22,19 +18,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-
-      localStorage.removeItem("token");
-      history.push("/login");
-      window.location.reload();
-    } else {
-      console.error('Erro na resposta da API:', error.response);
-    }
-    return Promise.reject(error);
-  }
-);
+// O interceptor de resposta para o erro 401 foi movido para o AuthContext
+// para que ele possa chamar a função logout e atualizar o estado global.
 
 export default axiosInstance;

@@ -1,60 +1,76 @@
+.header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .nav {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-top: 1em;
-  text-align: center;
-  background-color: var(--gray);
+  justify-content: space-between;
+  height: 70px; /* Altura fixa para a barra de navegação */
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-.nav .logo {
-  width: 150px;
-}
-
-.nav h6 {
-  margin: 0.5em 0;
+.logo {
+  height: 40px; /* Usar height para logos em navbars é mais consistente */
+  width: auto;
 }
 
 .navList {
   display: flex;
-  gap: .5rem;
-  list-style-type: none;
-  margin-top: 0.5em;
-  padding: 0;
-}
-
-.navItem {
-  display: flex;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.navList .navItem a, 
-.navList .navItem a {
-  padding: 0.5em .7em;
-  border-radius: 8px;
-  color: white;
-  transition: background-color 0.3s;
+.navLink {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.2s ease;
 }
 
-.navList .navItem a:hover,
-.navList .navItem a:hover {
-  text-decoration: underline;
-  background-color: var(--purple);
+.navLink:hover {
+  color: var(--color-text-primary);
 }
 
+/* Efeito de sublinhado para o link ativo */
+.navLink.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-primary);
+}
 
 .logoutButton {
-  color: var(--white);
-  border: 1px solid var(--white);
-  border-radius: 5px;
-  background-color: var(--salmon);
-  padding: 0.5em 1em;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
   cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.3s;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .logoutButton:hover {
-  opacity: 1;
+  background-color: var(--color-surface-light);
+  color: var(--color-error);
 }

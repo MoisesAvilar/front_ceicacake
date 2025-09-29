@@ -1,465 +1,232 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { format, parseISO } from "date-fns";
-import { BASE_URL } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
+import { FaEdit, FaTrash, FaPlus, FaFilter, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
+
 import styles from "./Sales.module.css";
 import Message from "../layout/Message";
-import { MessageProps } from "../types/messageTypes";
-import CapitalizeText from "../components/CapitalizeText";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import Loading from "../components/Loading";
+import Pagination from "../components/Pagination";
+import { MessageProps } from "../types/messageTypes";
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<MessageProps | null>(null);
   const [selectedSales, setSelectedSales] = useState<Set<number>>(new Set());
-  const [message, setMessage] = useState<MessageProps>({
-    msg: "",
-    type: "success",
-  });
-
+  
+  const [showFilters, setShowFilters] = useState(false);
   const [filterClient, setFilterClient] = useState<string>("");
   const [filterProduct, setFilterProduct] = useState<string>("");
   const [filterPaymentStatus, setFilterPaymentStatus] = useState<string>("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
 
-  const [uniqueClients, setUniqueClients] = useState<string[]>([]);
-  const [uniqueProducts, setUniqueProducts] = useState<string[]>([]);
-  const [uniquePaymentStatus, setUniquePaymentStatus] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const ITEMS_PER_PAGE = 20;
 
   const navigate = useNavigate();
 
-  const filterRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    } else {
-      getSales(token);
-    }
-  }, [navigate]);
-
-  useEffect(() => {
-    const storedMessage = localStorage.getItem("message");
-    const storedType = localStorage.getItem("type");
-    if (storedMessage && storedType) {
-      setMessage({
-        msg: storedMessage as string,
-        type: storedType as "success" | "error" | "info",
-      });
-    }
+  const displayMessage = useCallback((msg: string, type: MessageProps['type']) => {
+    setMessage({ msg, type });
     setTimeout(() => {
-      localStorage.removeItem("message");
-      localStorage.removeItem("type");
-      setMessage({ msg: "", type: "success" });
+      setMessage(null);
     }, 3000);
   }, []);
 
-  async function getSales(token: string) {
+  const getSales = useCallback(async () => {
     try {
-      const response = await axiosInstance.get(`${BASE_URL}/sales/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSales(response.data);
+      setLoading(true);
+      const ordering = sortDirection === 'asc' ? 'data_hour' : '-data_hour';
+      const response = await axiosInstance.get(
+        `/sales/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}&ordering=${ordering}`
+      );
+      
+      setSales(response.data.results);
+      const totalCount = response.data.count;
+      setTotalPages(Math.ceil(totalCount / ITEMS_PER_PAGE));
     } catch (error) {
-      console.log("Ocorreu um erro:", error);
+      console.error("Ocorreu um erro ao buscar as vendas:", error);
+      displayMessage("Falha ao carregar os dados. Tente novamente.", "error");
     } finally {
       setLoading(false);
     }
-  }
+  }, [displayMessage, currentPage, sortDirection]);
 
-  const handleDeleteSale = async (id: string) => {
-    const confirmDelete = window.confirm("Deseja realmente excluir?");
-    if (!confirmDelete) {
-      return;
-    }
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  useEffect(() => {
+    getSales();
+  }, [getSales]);
 
-    try {
-      await axiosInstance.delete(`${BASE_URL}/sales/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      getSales(token);
-      setMessage({ msg: "Venda excluída com sucesso", type: "info" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-    } catch (error) {
-      setMessage({ msg: "Erro ao excluir a venda", type: "error" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-    }
-  };
-
-  const handleDeleteSelectedSales = async () => {
-    const confirmDelete = window.confirm(
-      `Deseja realmente excluir ${selectedSales.size} vendas?`
+  const filteredSales = useMemo(() => {
+    return sales.filter(sale => 
+        (filterClient ? sale.customer_name === filterClient : true) &&
+        (filterProduct ? sale.product_name === filterProduct : true) &&
+        (filterPaymentStatus ? sale.payment_status === filterPaymentStatus : true)
     );
-    if (!confirmDelete) {
-      return;
-    }
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+  }, [sales, filterClient, filterProduct, filterPaymentStatus]);
 
-    try {
-      for (let saleId of selectedSales) {
-        await axiosInstance.delete(`${BASE_URL}/sales/${saleId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
-      setMessage({ msg: "Vendas excluídas com sucesso!", type: "info" });
-      getSales(token);
-      setSelectedSales(new Set());
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-    } catch (error) {
-      setMessage({ msg: "Erro ao excluir as vendas.", type: "error" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-    }
-  };
+  const uniqueClients = useMemo(() => [...new Set(sales.map(s => s.customer_name))].sort((a,b) => a.localeCompare(b)), [sales]);
+  const uniqueProducts = useMemo(() => [...new Set(sales.map(s => s.product_name))].sort((a,b) => a.localeCompare(b)), [sales]);
+  const uniquePaymentStatus = useMemo(() => [...new Set(sales.map(s => s.payment_status))], [sales]);
 
-  const handleUpdateSelectedSalesStatus = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    for (let saleId of selectedSales) {
-      try {
-        const response = await axiosInstance.get(
-          `${BASE_URL}/sales/${saleId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const saleData = response.data;
-        const updatedSale = {
-          ...saleData,
-          payment_status: "PAGO",
-        };
-
-        await axiosInstance.patch(`${BASE_URL}/sales/${saleId}`, updatedSale, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setMessage({
-          msg:
-            selectedSales.size === 1
-              ? "Venda atualizada com sucesso"
-              : "Vendas atualizadas com sucesso",
-          type: "info",
-        });
-
-        setTimeout(() => {
-          setMessage({ msg: "", type: "success" });
-        }, 3000);
-      } catch (error) {
-        setMessage({
-          msg:
-            selectedSales.size === 1
-              ? "Erro ao atualizar a venda"
-              : "Erro ao atualizar as vendas",
-          type: "error",
-        });
-
-        setTimeout(() => {
-          setMessage({ msg: "", type: "success" });
-        }, 3000);
-      }
-    }
-
-    getSales(token);
-    setSelectedSales(new Set());
-  };
-
-  const handleSelectedSales = (id: number) => {
-    setSelectedSales((prevSelectedSales) => {
-      const newSelectedSales = new Set(prevSelectedSales);
-      if (newSelectedSales.has(id)) {
-        newSelectedSales.delete(id);
-      } else {
-        newSelectedSales.add(id);
-      }
-      return newSelectedSales;
+  const handleToggleSelection = (id: number) => {
+    setSelectedSales(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) newSet.delete(id);
+      else newSet.add(id);
+      return newSet;
     });
   };
 
-  const handleSortByDate = () => {
-    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-  };
-
-  const formatDate = (date: string | null) => {
-    if (!date) return "N/A";
-    const parsedDate = parseISO(date);
-    return format(parsedDate, "dd/MM/yyyy - HH:mm");
-  };
-
-  useEffect(() => {
-    const getUniqueOptions = (sales: any[], field: string): string[] => {
-      const uniqueOptions = sales.reduce((acc: string[], sale) => {
-        if (sale[field] && !acc.includes(sale[field])) {
-          acc.push(sale[field]);
-        }
-        return acc;
-      }, []);
-      return uniqueOptions;
-    };
-
-    if (sales.length > 0) {
-      setUniqueClients(getUniqueOptions(sales, "customer_name"));
-      setUniqueProducts(getUniqueOptions(sales, "product_name"));
-      setUniquePaymentStatus(getUniqueOptions(sales, "payment_status"));
+  const handleSelectAll = () => {
+    if (selectedSales.size === filteredSales.length) {
+      setSelectedSales(new Set());
+    } else {
+      setSelectedSales(new Set(filteredSales.map(s => s.id)));
     }
-  }, [sales]);
+  };
+
+  const handleDelete = async (ids: number[]) => {
+    const confirm = window.confirm(`Deseja realmente excluir ${ids.length} venda(s)?`);
+    if (!confirm) return;
+
+    try {
+      await Promise.all(ids.map(id => axiosInstance.delete(`/sales/${id}/`)));
+      displayMessage(`${ids.length} venda(s) excluída(s) com sucesso!`, "info");
+      setSelectedSales(new Set());
+      getSales();
+    } catch (error) {
+      displayMessage("Erro ao excluir a(s) venda(s).", "error");
+    }
+  };
+
+  const handleUpdateStatus = async () => {
+    const confirm = window.confirm(`Marcar ${selectedSales.size} venda(s) como 'PAGO'?`);
+    if (!confirm) return;
+
+    try {
+      await Promise.all(
+        Array.from(selectedSales).map(id =>
+          axiosInstance.patch(`/sales/${id}/`, { payment_status: "PAGO" })
+        )
+      );
+      displayMessage("Status atualizado com sucesso!", "info");
+      setSelectedSales(new Set());
+      getSales();
+    } catch (error) {
+      displayMessage("Erro ao atualizar o status.", "error");
+    }
+  };
 
   return (
-    <>
-      <div className={styles.container}>
-        {message.msg && <Message msg={message.msg} type={message.type} />}
-        <div className={styles.header}>
-          <div className={styles.title}>
-            <h2>Vendas</h2>
-            <Link to="/sales/new" className={styles.link}>
-              Registrar Venda
-            </Link>
-          </div>
-          <div className={styles.buttonContainer}>
-            <button
-              className={styles.filterButton}
-              onClick={() => setShowFilters(!showFilters)
-              }
-            >
-              {showFilters ? "Fechar Filtro" : "Filtrar"}
-            </button>
-          </div>
+    <div className={styles.pageContainer}>
+      {message && <Message msg={message.msg} type={message.type} />}
+
+      <header className={styles.pageHeader}>
+        <h1>Gerenciamento de Vendas</h1>
+        <Link to="/sales/new" className={styles.primaryButton}>
+          <FaPlus /> Registrar Venda
+        </Link>
+      </header>
+
+      <div className={styles.actionBar}>
+        <div className={styles.selectionControls}>
+          <input
+            type="checkbox"
+            id="selectAll"
+            checked={selectedSales.size > 0 && selectedSales.size === filteredSales.length}
+            onChange={handleSelectAll}
+            className={styles.customCheckbox}
+          />
+          <label htmlFor="selectAll" className={styles.checkboxLabel}></label>
+          <span className={styles.selectionCount}>
+            {selectedSales.size > 0 ? `${selectedSales.size} selecionada(s)` : 'Selecionar'}
+          </span>
         </div>
-
-        {showFilters && (
-          <div className={styles.filterOverlay}></div>
-        )}
-
-        {showFilters && (
-          <div className={styles.filtersContainer}>
-            <div ref={filterRef} className={styles.filters}>
-              <label htmlFor="filterClient">Filtrar por Cliente:</label>
-              <select
-                id="filterClient"
-                value={filterClient}
-                onChange={(e) => setFilterClient(e.target.value)}
-              >
-                <option value="">Todos os Clientes</option>
-                {uniqueClients.map((client, index) => (
-                  <option key={index} value={client}>
-                    {<CapitalizeText text={client} />}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="filterProduct">Filtrar por Produto:</label>
-              <select
-                id="filterProduct"
-                value={filterProduct}
-                onChange={(e) => setFilterProduct(e.target.value)}
-              >
-                <option value="">Todos os Produtos</option>
-                {uniqueProducts.map((product, index) => (
-                  <option key={index} value={product}>
-                    {product}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="filterPaymentStatus">
-                Filtrar por Status de Pagamento:
-              </label>
-              <select
-                id="filterPaymentStatus"
-                value={filterPaymentStatus}
-                onChange={(e) => setFilterPaymentStatus(e.target.value)}
-              >
-                <option value="">Todos os Status</option>
-                {uniquePaymentStatus.map((status, index) => (
-                  <option key={index} value={status}>
-                    {<CapitalizeText text={status} />}
-                  </option>
-                ))}
-              </select>
-              <button
-                className={`${styles.button} ${styles.edit}`}
-                onClick={handleSortByDate}
-              >
-                Ordenar por Data {sortDirection === "asc" ? "↓" : "↑"}
-              </button>
-              {sales.length > 0 ? (
-                <ul className={styles.salesList}></ul>
-              ) : (
-                <p>Não há vendas cadastradas ainda.</p>
-              )}
-            </div>
+        
+        {selectedSales.size > 0 ? (
+          <div className={styles.bulkActions}>
+            <button onClick={handleUpdateStatus} className={styles.actionButton}>Marcar como Pago</button>
+            <button onClick={() => handleDelete(Array.from(selectedSales))} className={`${styles.actionButton} ${styles.danger}`}>Excluir</button>
           </div>
-        )}
-
-        {selectedSales.size >= 1 && (
-          <div>
-            <button
-              onClick={handleDeleteSelectedSales}
-              className={`${styles.delete} ${styles.button} ${styles.deleteSales}`}
-            >
-              Excluir {selectedSales.size}{" "}
-              {selectedSales.size === 1 ? "venda" : "vendas"}
-            </button>
-          </div>
-        )}
-        {selectedSales.size >= 1 && (
-          <div>
-            <button
-              onClick={handleUpdateSelectedSalesStatus}
-              className={`${styles.edit} ${styles.button} ${styles.updateSales}`}
-            >
-              Atualizar {selectedSales.size}{" "}
-              {selectedSales.size === 1
-                ? "item"
-                : "itens"}
-            </button>
-          </div>
-        )}
-        {loading ? (
-          <Loading />
-        ) : sales.length > 0 ? (
-          <ul className={styles.salesList}>
-            {sales
-              .filter(
-                (sale) =>
-                  (filterClient
-                    ? sale.customer_name
-                        .toLowerCase()
-                        .includes(filterClient.toLowerCase())
-                    : true) &&
-                  (filterProduct
-                    ? sale.product_name
-                        .toLowerCase()
-                        .includes(filterProduct.toLowerCase())
-                    : true) &&
-                  (filterPaymentStatus
-                    ? sale.payment_status
-                        .toLowerCase()
-                        .includes(filterPaymentStatus.toLowerCase())
-                    : true)
-              )
-              .sort((a, b) => {
-                const dateA = new Date(a.data_hour).getTime();
-                const dateB = new Date(b.data_hour).getTime();
-                return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
-              })
-              .map((sale) => (
-                <li
-                  key={sale.id}
-                  className={styles.saleItem}
-                  onClick={() => handleSelectedSales(sale.id)}
-                >
-                  <input
-                    type="checkbox"
-                    name="saleId"
-                    id={`saleId-${sale.id}`}
-                    value={sale.id}
-                    checked={selectedSales.has(sale.id)}
-                    onChange={() => handleSelectedSales(sale.id)}
-                    className={styles.checkbox}
-                  />
-                  <label
-                    htmlFor={`saleId-${sale.id}`}
-                    className={styles.checkboxLabel}
-                  ></label>
-                  <div>
-                    <strong>Produto:</strong> {sale.product_name}
-                  </div>
-                  <div>
-                    <strong>Preço:</strong> R$
-                    {sale.price.toFixed(2).replace(".", ",")}
-                  </div>
-                  <div>
-                    <strong>Quantidade:</strong> {sale.quantity}
-                  </div>
-                  <div>
-                    <strong>Cliente:{" "}
-                    <Link to={`/customer/${sale.customer}/`} className={styles.customerLink}>
-                      <CapitalizeText text={sale.customer_name} />
-                    </Link>
-                    </strong>
-                  </div>
-                  <div>
-                    <strong>Data:</strong> {formatDate(sale.data_hour)}
-                  </div>
-                  <div>
-                    <strong>Pagamento:</strong>{" "}
-                    <span
-                      style={{
-                        backgroundColor:
-                          sale.payment_status === "PAGO" ? "green" : "red",
-                        color: "white",
-                        padding: "5px 5px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <CapitalizeText text={sale.payment_status} />
-                    </span>
-                  </div>
-                  <div>
-                    <strong>Total:</strong> R$
-                    {sale.total.toFixed(2).replace(".", ",")}
-                  </div>
-                  <div>
-                    <strong>Registrado por:</strong>
-                    <CapitalizeText text={sale.user_name || "ceicacake"} />
-                  </div>
-                  <div className={styles.saleActions}>
-                    <button
-                      onClick={() => navigate(`/sales/${sale.id}`)}
-                      className={`${styles.edit} ${styles.button}`}
-                    >
-                      <FaEdit />Editar
-                    </button>
-                    <button
-                      onClick={() => handleDeleteSale(sale.id)}
-                      className={`${styles.delete} ${styles.button}`}
-                    >
-                      <FaTrash />Excluir
-                    </button>
-                  </div>
-                </li>
-              ))
-              .reverse()}
-          </ul>
         ) : (
-          <h2>Não há vendas cadastradas ainda.</h2>
+          <div className={styles.filterActions}>
+            <button onClick={() => setSortDirection(d => d === 'asc' ? 'desc' : 'asc')} className={styles.actionButton}>
+              {sortDirection === 'desc' ? <FaSortAmountDown /> : <FaSortAmountUp />}
+              Data
+            </button>
+            <button onClick={() => setShowFilters(s => !s)} className={`${styles.actionButton} ${showFilters ? styles.active : ''}`}>
+              <FaFilter /> Filtrar
+            </button>
+          </div>
         )}
       </div>
-    </>
+
+      {showFilters && (
+        <div className={styles.filtersPanel}>
+          <select value={filterClient} onChange={e => setFilterClient(e.target.value)}>
+            <option value="">Todos os Clientes</option>
+            {uniqueClients.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select value={filterProduct} onChange={e => setFilterProduct(e.target.value)}>
+            <option value="">Todos os Produtos</option>
+            {uniqueProducts.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <select value={filterPaymentStatus} onChange={e => setFilterPaymentStatus(e.target.value)}>
+            <option value="">Todos os Status</option>
+            {uniquePaymentStatus.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+      )}
+
+      {loading ? (
+        <Loading />
+      ) : filteredSales.length > 0 ? (
+        <>
+          <div className={styles.salesGrid}>
+            {filteredSales.map(sale => (
+              <div key={sale.id} className={styles.saleCard}>
+                <div className={styles.cardHeader}>
+                   <input
+                      type="checkbox"
+                      id={`sale-${sale.id}`}
+                      checked={selectedSales.has(sale.id)}
+                      onChange={() => handleToggleSelection(sale.id)}
+                      className={styles.customCheckbox}
+                    />
+                    <label htmlFor={`sale-${sale.id}`} className={styles.checkboxLabel}></label>
+                  <span className={`${styles.status} ${sale.payment_status === 'PAGO' ? styles.statusPaid : styles.statusPending}`}>
+                    {sale.payment_status}
+                  </span>
+                  <span className={styles.total}>R$ {sale.total.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div className={styles.cardBody}>
+                  <p className={styles.productName}>{sale.product_name}</p>
+                  <p className={styles.customerName}>
+                    Cliente: <Link to={`/customer/${sale.customer}`}>{sale.customer_name}</Link>
+                  </p>
+                  <p className={styles.saleDate}>
+                    {format(parseISO(sale.data_hour), "dd/MM/yyyy 'às' HH:mm")}
+                  </p>
+                </div>
+                <div className={styles.cardActions}>
+                  <button onClick={() => navigate(`/sales/${sale.id}`)} className={styles.iconButton} title="Editar"><FaEdit /></button>
+                  <button onClick={() => handleDelete([sale.id])} className={`${styles.iconButton} ${styles.danger}`} title="Excluir"><FaTrash /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      ) : (
+        <p className={styles.noResults}>Nenhuma venda encontrada.</p>
+      )}
+    </div>
   );
 };
 

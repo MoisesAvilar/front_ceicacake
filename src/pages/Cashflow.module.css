@@ -1,125 +1,209 @@
-.container {
+.pageContainer {
+  padding: 1rem;
+}
+
+.pageHeader {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  width: 100%;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 1em;
-  background-color: var(--gray);
 }
-
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin: 0;
-  background-color: var(--purple);
-  padding: 0.5em;
-  border-bottom: 1px solid var(--black);
-  color: var(--black);
-  position: sticky;
-  top: -1px;
-  z-index: 10;
+.primaryButton:hover {
+  background-color: var(--color-text-primary);
 }
-
-.header h2 {
-  color: var(--white);
+.periodSelectorContainer {
+  margin-bottom: 1.5rem;
 }
-
-.link {
-  color: var(--white);
-  font-size: 1em;
-  cursor: pointer;
-  margin-left: 0 auto;
-  text-decoration: underline;
-}
-
-.content {
-  width: 100%;
-  max-width: 1200px;
-  padding: 2em;
-  background-color: var(--grey);
-  border-radius: 12px;
-}
-
-.cardContainer {
+.summaryContainer {
   display: grid;
-  gap: 2em;
-  width: 100%;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.card {
-  width: 90vw;
-  background-color: #dadada;
-  padding: 2em;
+.summaryCard {
+  background-color: var(--color-surface);
+  padding: 1.25rem;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid var(--color-border);
 }
 
-.card:hover {
-  background-color: var(--white);
-  transform: scale(1.01);
-  transition: all 0.3s ease-in-out;
-}
-
-.cardItem {
-  margin-bottom: 1em;
-  font-size: 1.1em;
-  color: var(--black);
-}
-
-.cardItem strong {
-  color: var(--black);
-}
-
-.cardItem:last-child {
-  margin-bottom: 0;
-}
-
-.cashflowActions {
+.summaryCard .cardHeader {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
 }
 
-.button {
-  padding: 0.5em 2em;
-  font-size: 1em;
+.summaryCard.profit .cardHeader {
+  color: var(--color-success);
+}
+.summaryCard.expense .cardHeader {
+  color: var(--color-error);
+}
+
+.summaryCard .cardValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.filtersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.filtersPanel select {
+  width: 100%;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.cashflowGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cashflowCard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--color-surface);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 5px solid;
+  transition: background-color 0.2s ease;
+}
+.cashflowCard:hover {
+  background-color: var(--color-surface-light);
+}
+
+.cashflowCard.income {
+  border-left-color: var(--color-success);
+}
+.cashflowCard.expense {
+  border-left-color: var(--color-error);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.category {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.description {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+.date {
+  color: var(--color-text-disabled);
+  font-size: 0.8rem;
+}
+
+.cardValueSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.value {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.income .value {
+  color: var(--color-success);
+}
+.expense .value {
+  color: var(--color-error);
+}
+
+.iconButton {
+  background: none;
   border: none;
-  border-radius: 5px;
+  color: var(--color-text-secondary);
   cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.iconButton:hover {
+  background-color: var(--color-surface-light);
+  color: var(--color-text-primary);
 }
 
-.edit {
-  background-color: var(--purple);
-  color: var(--white);
-  border: 1px solid var(--white);
-  transition: background-color 0.3s;
+.noResults {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-text-secondary);
 }
 
-.edit svg {
-  margin-right: 5px;
-  vertical-align: baseline;
-}
-
-.edit:hover {
-  background-color: var(--pink);
-}
-
-@media only screen and (min-width: 768px) {
-  .cardContainer {
-    width: 70vw;
+@media (min-width: 640px) {
+  .pageContainer {
+    padding: 2rem;
   }
-}
 
-@media only screen and (min-width: 1024px) {
-  .card {
-    width: 100%;
+  .pageHeader h1 {
+    font-size: 2rem;
   }
-  .cardContainer {
-    width: 60%;
-    margin: 0 auto;
+  
+  .primaryButton {
+    width: auto;
+  }
+
+  .summaryCard .cardValue {
+    font-size: 2rem;
+  }
+
+  .filtersPanel {
+    flex-direction: row;
+  }
+
+  .filtersPanel select {
+    max-width: 300px;
+  }
+
+  .cashflowCard {
+    flex-wrap: nowrap;
+    padding: 1rem 1.5rem;
+  }
+
+  .value {
+    font-size: 1.25rem;
   }
 }

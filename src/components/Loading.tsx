@@ -1,29 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styles from "./Loading.module.css";
 
 const Loading: React.FC = () => {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 10);
-
-    return () => clearInterval(interval);
-  }, []);
-
+  // Removemos a lógica de progresso para um spinner infinito mais honesto.
   return (
     <div className={styles.loadingContainer}>
-      <div className={styles.spinnerWrapper}>
-        <div className={styles.spinner}></div>
-        <div className={styles.percentage}>{progress}%</div>
-      </div>
+      <div className={styles.spinner}></div>
+      <p className={styles.loadingText}>Carregando...</p>
     </div>
   );
 };

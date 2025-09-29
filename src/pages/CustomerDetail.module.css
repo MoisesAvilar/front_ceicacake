@@ -1,0 +1,171 @@
+.pageContainer {
+  padding: 1rem;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.backLink, .editButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.backLink {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+.backLink:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+
+.editButton {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: 1px solid var(--color-primary);
+}
+.editButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+
+.detailLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.customerDetailsSection {
+  background-color: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detailsView h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+.detailsView p {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+}
+.detailsView strong {
+  color: var(--color-text-primary);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.inputGroup label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+.inputGroup input {
+  width: 100%;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+.inputGroup input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(106, 63, 251, 0.3);
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.saveButton, .cancelButton {
+  flex-grow: 1;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid;
+  font-weight: 600;
+  cursor: pointer;
+}
+.saveButton {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.cancelButton {
+  background-color: var(--color-surface-light);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+
+.historySection {
+  background-color: var(--color-surface);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+.historySection h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.historyGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.saleCard {
+  background-color: var(--color-background);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+.saleCard strong { color: var(--color-text-secondary); }
+.saleCard p { color: var(--color-text-primary); }
+.noHistory {
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: 2rem;
+}
+
+
+@media (min-width: 1024px) {
+  .pageContainer {
+    padding: 2rem;
+  }
+  .detailLayout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+    .historyGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+}

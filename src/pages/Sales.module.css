@@ -1,252 +1,258 @@
-.container {
-  padding: 1em;
+.pageContainer {
+  padding: 1rem;
   width: 100%;
-  margin: 0 auto;
-  background-color: var(--gray);
 }
 
-.header {
+.pageHeader {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1em;
-  position: sticky;
-  top: 0;
-  background-color: var(--purple);
-  padding: 0.5em;
-  border-bottom: 1px solid var(--black);
-  color: var(--black);
-  z-index: 100;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.header h2 {
-  color: var(--white);
+.pageHeader h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-.buttonContainer .filterButton {
-  border: 1px solid var(--white);
-  color: var(--white);
-}
-
-.filterOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99;
-}
-
-.filtersContainer {
-  position: sticky;
-  top: 30vh;
-  z-index: 100; 
-}
-
-.filters {
-  display: flex;
-  position: absolute;
-  float: initial;
-  flex-wrap: wrap;
+.primaryButton {
+  display: inline-flex;
   align-items: center;
-  position: sticky;
-  top: 100px;
   justify-content: center;
-  text-align: center;
-  padding: 1em;
-  background-color: var(--white);
-  border: 1px solid var(--black);
-  border-radius: 5px;
-  margin-bottom: 1em;
-  z-index: 100;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  width: 100%;
 }
 
-.filters label {
-  flex: 1 0 100%;
-  margin-bottom: 0.5em;
-  font-weight: bold;
-  color: var(--black);
+.primaryButton:hover {
+  background-color: var(--color-text-primary);
 }
 
-.filters select {
-  flex: 1 0 100%;
-  padding: 0.5em;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 0.9em;
-  margin-right: 0.5em;
-  margin-bottom: 0.5em;
+.actionBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--color-surface);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 1rem;
 }
 
-.filterButton {
-  padding: 0.5em;
-  background-color: var(--button_color);
-  color: var(--white);
-  border: none;
-  border-radius: 5px;
+.selectionControls,
+.bulkActions,
+.filterActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selectionCount {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface-light);
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9em;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.filterButton:hover {
-  background-color: var(--button_hover_color);
+.actionButton:hover {
+  background-color: #333;
 }
 
-.salesList {
-  list-style: none;
-  padding: 0;
-  color: var(--black);
+.actionButton.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
-.saleItem {
-  border: 1px solid #999999;
-  border-radius: 5px;
-  padding: 1em;
-  margin-bottom: 1em;
-  background-color: var(--white_transparent);
+.actionButton.danger {
+  color: var(--color-error);
 }
 
-.saleItem:hover {
-  background-color: var(--white);
-  transform: scale(1.01);
-  transition: all 0.3s ease-in-out;
+.actionButton.danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error);
 }
 
-.saleItem div {
-  margin-bottom: 0.5em;
+.filtersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--color-surface);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 1.5rem;
 }
 
-.saleItem strong {
-  margin-right: 0.5em;
+.filtersPanel select {
+  flex-grow: 1;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
 }
 
-.checkbox {
+.salesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.saleCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.saleCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.statusPaid {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+}
+
+.statusPending {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--color-warning);
+}
+
+.total {
+  margin-left: auto;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.cardBody {
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+.productName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.customerName,
+.saleDate {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0 1rem 1rem;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.iconButton:hover {
+  background-color: var(--color-surface-light);
+  color: var(--color-text-primary);
+}
+
+.noResults {
+  text-align: center;
+  padding: 4rem;
+  color: var(--color-text-secondary);
+}
+
+.customCheckbox {
   display: none;
 }
-
-.checkbox + label {
-  position: relative;
+.checkboxLabel {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid #007bff;
-  border-radius: 50%;
+  background-color: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
   cursor: pointer;
-  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+.customCheckbox:checked + .checkboxLabel {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
 }
 
-.checkbox + label::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  background-color: #007bff;
-  transform: translate(-50%, -50%) scale(0);
-  transition: transform 0.2s ease-in-out;
-  border-radius: 50%;
-}
-
-.checkbox:checked + label::before {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.saleActions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.customerLink {
-  text-decoration: underline;
-  color: var(--purple);
-}
-
-.button {
-  padding: 0.5em 1em;
-  font-size: 1em;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
- .edit:hover,
- .delete:hover {
-  background-color: var(--pink);
-}
-
-.edit,
-.delete {
-  background-color: var(--purple);
-  color: var(--white);
-  border: 1px solid var(--white);
-  transition: background-color 0.3s;
-}
-
-.edit svg {
-  margin-right: 5px;
-  vertical-align: baseline;
-}
-
-.delete svg {
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-
-.deleteSales,
-.updateSales {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0 auto;
-  width: 90vw;
-  z-index: 100;
-}
-
-.deleteSales {
-  bottom: 0;
-  background-color: var(--delete);
-}
-
-.deleteSales:hover {
-  background-color: red;
-}
-
-.updateSales {
-  bottom: 50px;
-  background-color: var(--button_edit_color);
-}
-
-.updateSales:hover {
-  background-color: green;
-}
-
-.link {
-  text-decoration: underline;
-  color: var(--white);
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-@media only screen and (min-width: 768px) {
-  .container,
-  .updateSales,
-  .deleteSales {
-    width: 70vw;
+@media (min-width: 768px) {
+  .pageContainer {
+    padding: 2rem;
   }
-}
 
-@media only screen and (min-width: 1024px) {
-  .container,
-  .updateSales,
-  .deleteSales {
-    width: 50vw;
+  .pageHeader {
+    flex-wrap: nowrap;
+  }
+
+  .pageHeader h1 {
+    font-size: 2rem;
+  }
+
+  .primaryButton {
+    width: auto;
+  }
+  
+  .actionBar {
+    flex-wrap: nowrap;
+  }
+
+  .filtersPanel {
+    flex-direction: row;
   }
 }

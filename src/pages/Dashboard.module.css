@@ -1,51 +1,77 @@
-.container {
-  width: 100%;
-  margin: 0 auto;
-  background-color: var(--gray);
-  text-align: center;
+.pageContainer {
+  padding: 1rem;
 }
 
-.header {
+.pageHeader {
+  margin-bottom: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.periodSelectorContainer {
+  margin-bottom: 1.5rem;
+}
+
+.dashboardGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.chartCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1em 0;
-  position: sticky;
-  top: -1px;
-  background-color: var(--purple);
-  padding: .5em;
-  border-radius:5px;
-  border-bottom: 1px solid var(--black);
-  color: var(--black);
-  z-index: 100;
+  flex-direction: column;
+}
+
+.chartTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text-primary);
+}
+
+.chartCard > div {
   width: 100%;
+  height: 100%;
+  min-height: 350px;
 }
 
-.header h2 {
-  color: var(--white);
+@media (min-width: 768px) {
+  .pageContainer {
+    padding: 2rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 2rem;
+  }
+
+  .dashboardGrid {
+    gap: 1.5rem;
+  }
+
+  .chartCard {
+    padding: 1.5rem;
+  }
+
+  .chartTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
-.buttonContainer .filterButton {
-  border: 1px solid var(--white);
-  color: var(--white);
-  background-color: transparent;
-  cursor: pointer;
-  padding: 0.5em;
-  font-size: 1em;
-  border-radius: 5px;
-}
-
-.filterButton:hover {
-  background-color: var(--button_hover_color);
-}
-
-.chartContainer {
-  width: 98%;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1em 2px;
-  margin-bottom: 20px;
+@media (min-width: 1024px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 }

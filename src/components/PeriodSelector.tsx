@@ -27,6 +27,13 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ onChange }) => {
     onChange(firstSaleDate, formattedEndDate);
   }, []);
 
+  useEffect(() => {
+    // Garante que ambos os campos tenham valor antes de chamar o onChange
+    if (startDate && endDate) {
+      onChange(startDate, endDate);
+    }
+  }, [startDate, endDate]);
+
   const getWeekDates = () => {
     const today = new Date();
     const firstDay = today.getDate() - today.getDay();
@@ -72,10 +79,6 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ onChange }) => {
     onChange(startDate, endDate);
   };
 
-  const handleSubmit = () => {
-    onChange(startDate, endDate);
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.quickSelect}>
@@ -104,10 +107,6 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ onChange }) => {
           className={styles.dateInput}
         />
       </div>
-
-      <button onClick={handleSubmit} className={styles.filterButton}>
-        Filtrar
-      </button>
     </div>
   );
 };

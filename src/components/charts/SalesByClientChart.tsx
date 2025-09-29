@@ -1,127 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import Chart from '../common/Chart';
 import { fetchSalesByClient } from '../../services/salesService';
-import { fetchCustomers } from '../../services/customersService';
 import { TooltipItem } from 'chart.js';
 
-const SalesByClientChart: React.FC = () => {
+interface ChartStyleProps {
+  textColor: string;
+  tooltipBgColor: string;
+  // 1. Receber startDate e endDate
+  startDate: string;
+  endDate: string;
+}
+
+const SalesByClientChart: React.FC<ChartStyleProps> = ({ textColor, tooltipBgColor, startDate, endDate }) => {
   const [salesData, setSalesData] = useState<any>(null);
-  const [customersData, setCustomersData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const getCustomersData = async () => {
-      try {
-        const customers = await fetchCustomers();
-        setCustomersData(customers);
-      } catch (error) {
-        setError('Erro ao buscar dados de clientes');
-      }
-    };
+    // 2. Verificar se as datas existem
+    if (startDate && endDate) {
+      setLoading(true);
+      // 3. Passar as datas para a função do serviço
+      fetchSalesByClient(startDate, endDate)
+        .then(sales => {
+          const labels = sales.map((item: any) => item.customer__name || 'Cliente Desconhecido');
+          const data = sales.map((item: any) => item.total_sales);
+          const colors = sales.map((_: any, index: number) => `hsl(${200 + index * 35}, 70%, 60%)`);
 
-    getCustomersData();
-  }, []);
+          setSalesData({
+            labels,
+            datasets: [{ data, backgroundColor: colors }],
+          });
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [startDate, endDate]); // 4. Adicionar as datas como dependência
 
-  useEffect(() => {
-    if (customersData.length === 0) return;
 
-    const getSalesData = async () => {
-      try {
-        const sales = await fetchSalesByClient();
-        const updatedSalesData = sales.map((item: any) => ({
-          ...item,
-          customer_name: item.customer__name || 'Cliente Desconhecido',
-        }));
-
-        const colors = updatedSalesData.map((_, index) => {
-          const hue = (index * 360) / updatedSalesData.length % 360;
-          return `hsl(${hue}, 70%, 50%)`;
-        });
-
-        setSalesData({
-          labels: updatedSalesData.map((item: any) => item.customer_name),
-          datasets: [
-            {
-              label: 'Valor comprado',
-              data: updatedSalesData.map((item: any) => item.total_sales),
-              backgroundColor: colors,
-              borderColor: 'rgba(0, 0, 0, 0.1)',
-              borderWidth: 1,
-            },
-          ],
-        });
-      } catch (error) {
-        setError('Erro ao buscar dados de vendas');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSalesData();
-  }, [customersData]);
-
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading || !salesData) return <div>Carregando...</div>;
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    aspectRatio: 5,
     plugins: {
-      title: {
-        display: true,
-        text: 'Vendas por Cliente',
-        font: {
-          size: 24,
-          weight: 'bold',
-          family: 'Arial',
-        },
-      },
+      legend: { position: 'right' as const, labels: { color: textColor, font: { family: 'Inter, sans-serif' } } },
       tooltip: {
+        backgroundColor: tooltipBgColor,
+        titleColor: textColor,
+        bodyColor: textColor,
+        titleFont: { size: 16, weight: 'bold', family: 'Inter, sans-serif' },
+        bodyFont: { size: 14, family: 'Inter, sans-serif' },
         callbacks: {
-          label: (tooltipItem: TooltipItem<'pie'>) => {
-            const chart = tooltipItem.chart;
-
-            const visibleData = chart.data.datasets[0].data.filter((_, index) => {
-              const legendItem = chart.legend?.legendItems?.[index];
-              return legendItem && !legendItem.hidden;
-            }) as number[]; // Garante que `visibleData` é um array de números
-
-            const value = tooltipItem.raw as number;
-            const total = visibleData.reduce((acc: number, curr: number) => acc + curr, 0); // Soma corretamente
-
-            if (total === 0) return 'Nenhuma venda visível'; // Evita divisão por zero
-
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `R$${new Intl.NumberFormat('pt-BR', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(value)} (${percentage}%)`;
+          label: (item: TooltipItem<'pie'>) => {
+            const value = item.raw as number;
+            const total = (item.chart.data.datasets[0].data as number[]).reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return ` R$ ${value.toFixed(2).replace('.', ',')} (${percentage}%)`;
           },
-        },
-        titleFont: {
-          size: 20,
-        },
-        bodyFont: {
-          size: 18,
-        },
-      },
-      legend: {
-        onClick: (
-          e: React.MouseEvent<HTMLCanvasElement>,
-          legendItem: any,
-          legend: any
-        ) => {
-          const chart = legend.chart;
-          chart.toggleDataVisibility(legendItem.index);
-          chart.update();
         },
       },
     },
   };
 
-  return <Chart type="pie" data={salesData} options={options} />;
+  return <Chart type="pie" data={salesData} options={options as any} />;
 };
 
 export default SalesByClientChart;

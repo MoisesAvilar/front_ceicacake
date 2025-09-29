@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../services/axiosConfig";
-import { BASE_URL } from "../../services/api";
 import styles from "./Form.module.css";
 import { CashflowTypes } from "../../types/cashflowTypes";
 
@@ -27,159 +26,85 @@ const CashflowForm: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isEditing) {
-      fetchCashflow();
-    }
+    const fetchCashflow = async () => {
+      if (isEditing) {
+        try {
+          // Lógica de token removida, o axiosInstance cuida disso.
+          const response = await axiosInstance.get<CashflowTypes>(`/cashflow/${id}/`);
+          setCashflow(response.data);
+        } catch (error) {
+          console.error("Erro ao carregar dados do fluxo de caixa.", error);
+        }
+      }
+    };
+    fetchCashflow();
   }, [id, isEditing]);
 
-  const fetchCashflow = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.get<CashflowTypes>(`${BASE_URL}/cashflow/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setCashflow(response.data);
-    } catch (error) {
-      setMessage({
-        msg: "Erro ao carregar dados do fluxo de caixa.",
-        type: "error",
-      });
-    }
-  };
-
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { name, value } = event.target;
-    setCashflow((prevCashflow) => ({
-      ...prevCashflow,
-      [name]: value,
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setCashflow(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-  
     try {
-      if (isEditing) {
-        await axiosInstance.put(`${BASE_URL}/cashflow/${id}/`, cashflow, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        localStorage.setItem("message", "Fluxo de caixa atualizado com sucesso.");
-        localStorage.setItem("type", "success");
-      } else {
-        await axiosInstance.post(`${BASE_URL}/cashflow/`, cashflow, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        localStorage.setItem("message", "Fluxo de caixa registrado com sucesso.");
-        localStorage.setItem("type", "success");
-      }
-  
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-  
+      const promise = isEditing
+        ? axiosInstance.put(`/cashflow/${id}/`, cashflow)
+        : axiosInstance.post(`/cashflow/`, cashflow);
+      
+      await promise;
+
+      localStorage.setItem("message", `Registro ${isEditing ? 'atualizado' : 'criado'} com sucesso.`);
+      localStorage.setItem("type", "success");
       navigate("/cashflow");
     } catch (error) {
-      localStorage.setItem("message", "Erro ao registrar ou atualizar o fluxo de caixa.");
+      localStorage.setItem("message", `Erro ao ${isEditing ? 'atualizar' : 'criar'} o registro.`);
       localStorage.setItem("type", "error");
+      navigate("/cashflow"); // Navega mesmo em caso de erro para ver a mensagem
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>
-          {isEditing ? "Editar Fluxo de Caixa" : "Registrar Fluxo de Caixa"}
-        </legend>
-        <label htmlFor="category" className={styles.label}>
-          Categoria*
-        </label>
-        <input
-          type="text"
-          id="category"
-          name="category"
-          value={cashflow.category}
-          onChange={handleChange}
-          required
-          className={styles.input}
-          placeholder="Informe a categoria"
-        />
-        <label htmlFor="value" className={styles.label}>
-          Valor*
-        </label>
-        <input
-          type="number"
-          id="value"
-          name="value"
-          value={cashflow.value}
-          onChange={handleChange}
-          required
-          className={styles.input}
-          placeholder="Informe o valor"
-        />
-        <label htmlFor="date" className={styles.label}>
-          Data*
-        </label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          value={cashflow.date}
-          onChange={handleChange}
-          required
-          className={styles.input}
-        />
-        <label htmlFor="value_type" className={styles.label}>
-          Tipo de Fluxo*
-        </label>
-        <select
-          name="value_type"
-          id="value_type"
-          value={cashflow.value_type}
-          onChange={handleChange}
-          required
-          className={styles.select}
+    <div className={styles.formContainer}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <fieldset className={styles.fieldset}>
+          <legend className={styles.legend}>
+            {isEditing ? "Editar Registro" : "Novo Registro de Caixa"}
+          </legend>
           
-        >
-          <option value="" disabled>Selecione</option>
-          <option value="EXPENSE">Gasto</option>
-          <option value="PROFIT">Lucro</option>
-        </select>
-        <label htmlFor="description" className={styles.label}>
-          Descrição
-        </label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          value={cashflow.description}
-          onChange={handleChange}
-          className={styles.input}
-          placeholder="Opcional"
-        />      
-        <button type="submit" className={styles.button}>
-          {isEditing ? "Atualizar" : "Registrar"}
-        </button>
-      </fieldset>
-    </form>
+          <div className={styles.inputGroup}>
+            <label htmlFor="category" className={styles.label}>Categoria*</label>
+            <input type="text" id="category" name="category" value={cashflow.category} onChange={handleChange} required className={styles.input} placeholder="Ex: Pagamento de Fornecedor"/>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="value" className={styles.label}>Valor (R$)*</label>
+            <input type="number" id="value" name="value" value={cashflow.value} onChange={handleChange} required className={styles.input} placeholder="Ex: 150.75" step="0.01"/>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="date" className={styles.label}>Data*</label>
+            <input type="date" id="date" name="date" value={cashflow.date} onChange={handleChange} required className={styles.input}/>
+          </div>
+          
+          <div className={styles.inputGroup}>
+            <label htmlFor="value_type" className={styles.label}>Tipo de Lançamento*</label>
+            <select name="value_type" id="value_type" value={cashflow.value_type} onChange={handleChange} required className={styles.select}>
+              <option value="" disabled>Selecione</option>
+              <option value="EXPENSE">Despesa</option>
+              <option value="PROFIT">Receita</option>
+            </select>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="description" className={styles.label}>Descrição</label>
+            <input type="text" id="description" name="description" value={cashflow.description} onChange={handleChange} className={styles.input} placeholder="(Opcional)"/>
+          </div>
+          
+          <button type="submit" className={styles.button}>{isEditing ? "Atualizar" : "Registrar"}</button>
+        </fieldset>
+      </form>
+    </div>
   );
 };
 

@@ -1,174 +1,148 @@
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { format, parseISO } from "date-fns";
-import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
 
 import Message from "../layout/Message";
-import { MessageProps } from "../types/messageTypes";
 import Loading from "../components/Loading";
+import { MessageProps } from "../types/messageTypes";
+import Pagination from "../components/Pagination";
 
 import styles from "./Customers.module.css";
-import CapitalizeText from "../components/CapitalizeText";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaPhone, FaBirthdayCake, FaCreditCard, FaShoppingBag } from "react-icons/fa";
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
-  const [message, setMessage] = useState<MessageProps>({
-    msg: "",
-    type: "success",
-  });
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
+  const [message, setMessage] = useState<MessageProps | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    } else {
-      getAllCustomers(token);
-    }
-  }, [navigate]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const ITEMS_PER_PAGE = 20;
 
-  useEffect(() => {
-    const storedMessage = localStorage.getItem("message");
-    const storedType = localStorage.getItem("type");
-  
-    if (storedMessage && storedType) {
-      setMessage({
-        msg: storedMessage,
-        type: storedType as "success" | "error" | "info",
-      });
-    }
-
-    localStorage.removeItem("message");
-    localStorage.removeItem("type");
-    
-    const timer = setTimeout(() => {
-      setMessage({ msg: "", type: "success" });
-    }, 3000);
-  
-    return () => clearTimeout(timer);
+  // --- FUNÇÕES DE CALLBACK ---
+  // 1. Movido 'displayMessage' para antes de ser usado
+  const displayMessage = useCallback((msg: string, type: MessageProps['type']) => {
+    setMessage({ msg, type });
+    setTimeout(() => setMessage(null), 3000);
   }, []);
 
-  async function getAllCustomers(token: string) {
+  const getAllCustomers = useCallback(async () => {
     try {
-      const response = await axiosInstance.get(`${BASE_URL}/customers/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setCustomers(response.data);
+      setLoading(true);
+      const response = await axiosInstance.get(`/customers/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}`);
+      
+      setCustomers(response.data.results); 
+      const totalCount = response.data.count;
+      setTotalPages(Math.ceil(totalCount / ITEMS_PER_PAGE));
+
     } catch (error) {
       console.error("Ocorreu um erro ao buscar clientes:", error);
+      displayMessage("Falha ao carregar os clientes.", "error");
     } finally {
       setLoading(false);
     }
-  }
+  }, [displayMessage, currentPage]);
 
+  useEffect(() => {
+    getAllCustomers();
+  }, [getAllCustomers]);
+  
   const handleDeleteCustomer = async (id: string) => {
-    const confirmDelete = window.confirm("Deseja realmente excluir?");
-    if (!confirmDelete) {
-      return;
-    }
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    if (!window.confirm("Deseja realmente excluir este cliente?")) return;
 
     try {
-      await axiosInstance.delete(`${BASE_URL}/customers/${id}/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setMessage({ msg: "Cliente excluido com sucesso.", type: "success" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
-      getAllCustomers(token);
+      await axiosInstance.delete(`/customers/${id}/`);
+      displayMessage("Cliente excluído com sucesso.", "info");
+      getAllCustomers();
     } catch (error) {
-      console.log("Erro ao excluir cliente:", error);
-      setMessage({ msg: "Erro ao excluir cliente.", type: "error" });
-      setTimeout(() => {
-        setMessage({ msg: "", type: "success" });
-      }, 3000);
+      console.error("Erro ao excluir cliente:", error);
+      displayMessage("Erro ao excluir o cliente.", "error");
     }
   };
 
-  const formatPhoneNumber = (phoneNumber: string | null) => {
-    if (!phoneNumber) return "N/A";
-    return `(${phoneNumber.slice(0, 2)}) ${phoneNumber.slice(
-      2,
-      7
-    )}-${phoneNumber.slice(7)}`;
-  };
+  const filteredCustomers = useMemo(() => {
+    return customers.filter(customer =>
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [customers, searchQuery]);
 
-  const formatDate = (date: string | null) => {
-    if (!date) return "N/A";
-    const parsedDate = parseISO(date);
-    return format(parsedDate, "dd/MM/yyyy");
-  };
+  const formatPhoneNumber = (phone: string) => `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7)}`;
+  const formatDate = (date: string) => format(parseISO(date), "dd/MM/yyyy");
 
   return (
-    <div className={styles.container}>
-      {message.msg && <Message msg={message.msg} type={message.type} />}
-      <div className={styles.header}>
-        <h2>Clientes</h2>
-        <Link to="/customer/new" className={styles.newCustomer}>
-          Cadastrar cliente
+    <div className={styles.pageContainer}>
+      {message && <Message msg={message.msg} type={message.type} />}
+
+      <header className={styles.pageHeader}>
+        <h1>Gerenciar Clientes</h1>
+        <Link to="/customer/new" className={styles.primaryButton}>
+          <FaPlus /> Cadastrar Cliente
         </Link>
+      </header>
+      
+      <div className={styles.searchBar}>
+        <input
+          type="text"
+          placeholder="Buscar cliente por nome..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={styles.searchInput}
+        />
       </div>
+
       {loading ? (
         <Loading />
-      ) : customers.length > 0 ? (
-        <ul className={styles.customersList}>
-          {customers.map((customer) => (
-            <li key={customer.id} className={styles.customerItem}>
-              <div>
-                <strong>Nome:</strong>
-                <strong>
-                  <Link to={`/customer/${customer.id}`} className={styles.link}>
-                    <CapitalizeText text={customer.name} />
+      ) : filteredCustomers.length > 0 ? (
+        <> 
+          <div className={styles.customerGrid}>
+            {filteredCustomers.map((customer) => (
+              <div key={customer.id} className={styles.customerCard}>
+                <div className={styles.cardHeader}>
+                  <Link to={`/customer/${customer.id}`} className={styles.customerName}>
+                    {customer.name}
                   </Link>
-                </strong>
+                  <div className={styles.cardActions}>
+                    <Link to={`/customer/${customer.id}?edit=true`} className={styles.iconButton} title="Editar">
+                      <FaEdit />
+                    </Link>
+                    <button onClick={() => handleDeleteCustomer(customer.id)} className={`${styles.iconButton} ${styles.danger}`} title="Excluir">
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.cardBody}>
+                  {customer.phone_number && (
+                    <div className={styles.infoRow}><FaPhone /><p>{formatPhoneNumber(customer.phone_number)}</p></div>
+                  )}
+                  {customer.birthday && (
+                    <div className={styles.infoRow}><FaBirthdayCake /><p>{formatDate(customer.birthday)}</p></div>
+                  )}
+                </div>
+
+                <div className={styles.cardFooter}>
+                  <div className={styles.financialInfo} title="Total em Compras">
+                    <FaShoppingBag className={styles.successIcon} />
+                    <span>R$ {customer.bought.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                  <div className={styles.financialInfo} title="Dívida Atual">
+                    <FaCreditCard className={styles.dangerIcon} />
+                    <span>R$ {customer.debt.toFixed(2).replace(".", ",")}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <strong>Telefone:</strong>
-                {formatPhoneNumber(customer.phone_number)}
-              </div>
-              <div>
-                <strong>Data de Nascimento:</strong>
-                {formatDate(customer.birthday)}
-              </div>
-              <div>
-                <strong>Dívida:</strong>
-                R${customer.debt.toFixed(2).replace(".", ",")}
-              </div>
-              <div>
-                <strong>Total em Compras:</strong>
-                R${customer.bought.toFixed(2).replace(".", ",")}
-              </div>
-              <div className={styles.customerActions}>
-                <Link
-                  to={`/customer/${customer.id}`}
-                  className={`${styles.button} ${styles.edit}`}
-                >
-                  <FaEdit /> Editar
-                </Link>
-                <button
-                  onClick={() => handleDeleteCustomer(customer.id)}
-                  className={`${styles.button} ${styles.delete}`}
-                >
-                  <FaTrash /> Excluir
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>
       ) : (
-        <h2>Não há clientes cadastrados ainda.</h2>
+        <p className={styles.noResults}>Nenhum cliente encontrado.</p>
       )}
     </div>
   );

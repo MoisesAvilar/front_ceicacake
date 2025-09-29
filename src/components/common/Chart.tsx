@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import styles from './Chart.module.css';
+// O nome do arquivo CSS foi mantido como no seu upload, mas lembre-se que
+// na etapa anterior o chamamos de 'common/Chart.module.css'
+import styles from './Chart.module.css'; 
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -16,7 +18,7 @@ import {
   ChartData,
 } from 'chart.js';
 
-
+// Registro dos componentes do Chart.js (está perfeito)
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -40,7 +42,6 @@ const Chart: React.FC<ChartProps> = ({ type, data, options }) => {
   const chartRef = useRef<any>(null);
 
   useEffect(() => {
-
     if (chartRef.current) {
       chartRef.current.update();
     }
@@ -64,7 +65,9 @@ const Chart: React.FC<ChartProps> = ({ type, data, options }) => {
     }
   };
 
-  return <div className={styles.chartContainer}>
+  // Ajuste aqui: trocamos 'chartContainer' por 'chartCanvasContainer'
+  // para corresponder ao CSS que criamos.
+  return <div className={styles.chartCanvasContainer}>
     {renderChart()}
   </div>;
 };
