@@ -4,26 +4,26 @@
 /* 2. Definindo a nova paleta de cores "Deep Focus" */
 :root {
   /* Cores de Fundo */
-  --color-background: #121212; /* Um preto quase puro, muito elegante */
-  --color-surface: #1E1E1E;   /* Cor para "superfícies" como cards e modais */
-  --color-surface-light: #2A2A2A; /* Uma superfície um pouco mais clara para hover */
+  --color-background: #F8F9FA; /* Um branco suave, menos "brilhante" que o branco puro */
+  --color-surface: #FFFFFF;    /* Cor para "superfícies" como cards, que se destacam do fundo */
+  --color-surface-light: #F1F3F5; /* Uma superfície um pouco mais escura para hover */
 
   /* Cores de Texto */
-  --color-text-primary: #EAEAEA;   /* Texto principal, não branco puro para conforto visual */
-  --color-text-secondary: #A0A0A0; /* Texto secundário, para labels e descrições */
-  --color-text-disabled: #5A5A5A;  /* Texto para elementos desabilitados */
+  --color-text-primary: #212529;   /* Texto principal, um preto suave para conforto visual */
+  --color-text-secondary: #6C757D; /* Texto secundário, para labels e descrições */
+  --color-text-disabled: #ADB5BD;   /* Texto para elementos desabilitados */
 
-  /* Cor de Destaque (Accent) */
-  --color-primary: #6A3FFB;        /* Um roxo vibrante e moderno */
-  --color-primary-hover: #5A2EEA;   /* Variação para hover */
+  /* Cor de Destaque (Accent) - Mantida */
+  --color-primary: #6A3FFB;
+  --color-primary-hover: #5A2EEA;
 
-  /* Cores de Feedback */
+  /* Cores de Feedback - Mantidas */
   --color-success: #10B981;
   --color-error: #EF4444;
   --color-warning: #F59E0B;
 
   /* Outros */
-  --color-border: #3A3A3A; /* Bordas sutis */
+  --color-border: #DEE2E6; /* Borda clara para divisões sutis */
 }
 
 /* 3. Reset e Estilos Globais */

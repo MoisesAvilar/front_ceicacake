@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { format, parseISO } from "date-fns";
 import { Link } from "react-router-dom";
 import axiosInstance from "../services/axiosConfig";
@@ -7,9 +7,25 @@ import Message from "../layout/Message";
 import Loading from "../components/Loading";
 import { MessageProps } from "../types/messageTypes";
 import Pagination from "../components/Pagination";
+import CapitalizeText from "../components/CapitalizeText";
 
 import styles from "./Customers.module.css";
 import { FaEdit, FaTrash, FaPlus, FaPhone, FaBirthdayCake, FaCreditCard, FaShoppingBag } from "react-icons/fa";
+
+// Hook customizado para o "debounce"
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  return debouncedValue;
+};
+
 
 const Customers: React.FC = () => {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -21,8 +37,9 @@ const Customers: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const ITEMS_PER_PAGE = 20;
 
-  // --- FUNÇÕES DE CALLBACK ---
-  // 1. Movido 'displayMessage' para antes de ser usado
+  // Usa o hook de debounce para evitar chamadas excessivas à API
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   const displayMessage = useCallback((msg: string, type: MessageProps['type']) => {
     setMessage({ msg, type });
     setTimeout(() => setMessage(null), 3000);
@@ -31,7 +48,8 @@ const Customers: React.FC = () => {
   const getAllCustomers = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/customers/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}`);
+      // Adiciona o parâmetro `search` à chamada da API
+      const response = await axiosInstance.get(`/customers/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}&search=${debouncedSearchQuery}`);
       
       setCustomers(response.data.results); 
       const totalCount = response.data.count;
@@ -43,7 +61,15 @@ const Customers: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [displayMessage, currentPage]);
+  }, [displayMessage, currentPage, debouncedSearchQuery]); // Adiciona a busca debounced como dependência
+
+  // Reseta a página para 1 quando uma nova busca é feita
+  useEffect(() => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  }, [debouncedSearchQuery]);
+
 
   useEffect(() => {
     getAllCustomers();
@@ -62,11 +88,8 @@ const Customers: React.FC = () => {
     }
   };
 
-  const filteredCustomers = useMemo(() => {
-    return customers.filter(customer =>
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [customers, searchQuery]);
+  // REMOVEMOS A FILTRAGEM LOCAL (filteredCustomers)
+  // O backend agora faz todo o trabalho!
 
   const formatPhoneNumber = (phone: string) => `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7)}`;
   const formatDate = (date: string) => format(parseISO(date), "dd/MM/yyyy");
@@ -94,14 +117,16 @@ const Customers: React.FC = () => {
 
       {loading ? (
         <Loading />
-      ) : filteredCustomers.length > 0 ? (
+        // Agora usamos `customers` diretamente, pois a API já retorna a lista filtrada
+      ) : customers.length > 0 ? (
         <> 
           <div className={styles.customerGrid}>
-            {filteredCustomers.map((customer) => (
+            {customers.map((customer) => (
               <div key={customer.id} className={styles.customerCard}>
+                {/* O restante do seu JSX permanece igual */}
                 <div className={styles.cardHeader}>
                   <Link to={`/customer/${customer.id}`} className={styles.customerName}>
-                    {customer.name}
+                    <CapitalizeText text={customer.name} />
                   </Link>
                   <div className={styles.cardActions}>
                     <Link to={`/customer/${customer.id}?edit=true`} className={styles.iconButton} title="Editar">
@@ -114,11 +139,16 @@ const Customers: React.FC = () => {
                 </div>
 
                 <div className={styles.cardBody}>
-                  {customer.phone_number && (
+                  {customer.phone_number ? (
                     <div className={styles.infoRow}><FaPhone /><p>{formatPhoneNumber(customer.phone_number)}</p></div>
+                  ) : (
+                    <div className={styles.infoRow}><FaPhone /><p className={styles.noInfoText}>Não informado</p></div>
                   )}
-                  {customer.birthday && (
+
+                  {customer.birthday ? (
                     <div className={styles.infoRow}><FaBirthdayCake /><p>{formatDate(customer.birthday)}</p></div>
+                  ) : (
+                    <div className={styles.infoRow}><FaBirthdayCake /><p className={styles.noInfoText}>Não informada</p></div>
                   )}
                 </div>
 

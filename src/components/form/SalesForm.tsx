@@ -4,6 +4,7 @@ import axiosInstance from "../../services/axiosConfig";
 import { SalesTypes } from "../../types/salesTypes";
 import { PaymentStatus } from "../../services/payment_status";
 import { Product } from "../../services/productTypes";
+import CapitalizeText from "../../components/CapitalizeText";
 import styles from "./Form.module.css";
 import { FaUserPlus } from "react-icons/fa";
 
@@ -38,14 +39,10 @@ const SalesForm: React.FC = () => {
       setIsLoadingOptions(true);
       try {
         const productsPromise = axiosInstance.get<Product[]>('/products/');
-        // Buscamos todos os clientes, a paginação padrão deve retornar os primeiros
-        const customersPromise = axiosInstance.get<{ results: Customer[] }>('/customers/');
-        
+        const customersPromise = axiosInstance.get<Customer[]>('/customers/all/');
         const [productsResponse, customersResponse] = await Promise.all([productsPromise, customersPromise]);
-        
         setProducts(productsResponse.data);
-        setCustomers(customersResponse.data.results);
-
+        setCustomers(customersResponse.data);
       } catch (error) {
         console.error("Erro ao carregar opções do formulário:", error);
       } finally {
@@ -143,7 +140,9 @@ const SalesForm: React.FC = () => {
               ) : (
                 <>
                   <option value="" disabled>Selecione um cliente</option>
-                  {customers.map((c) => ( <option key={c.id} value={c.id}>{c.name}</option> ))}
+                  {customers.map((c) => ( <option key={c.id} value={c.id}>
+                    <CapitalizeText text={c.name} />
+                  </option> ))}
                 </>
               )}
             </select>

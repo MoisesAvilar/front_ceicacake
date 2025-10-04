@@ -19,7 +19,7 @@ const CustomersName: React.FC = () => {
 
   async function getAllCustomers(token: string) {
     try {
-      const response = await axiosInstance.get(`${BASE_URL}/customers/`, {
+      const response = await axiosInstance.get(`${BASE_URL}/customers/all/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

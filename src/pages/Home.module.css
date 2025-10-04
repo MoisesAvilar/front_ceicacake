@@ -33,7 +33,7 @@
 .card:hover {
   transform: translateY(-5px);
   border-color: var(--color-primary);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .cardIcon {

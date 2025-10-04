@@ -30,7 +30,7 @@
   justify-content: center;
 }
 .primaryButton:hover {
-  background-color: var(--color-text-primary);
+  background-color: var(--color-surface);
 }
 .periodSelectorContainer {
   margin-bottom: 1.5rem;

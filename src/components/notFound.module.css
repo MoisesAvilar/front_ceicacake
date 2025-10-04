@@ -33,7 +33,7 @@
 }
 
 .homeLink:hover {
-  background-color: var(--color-text-primary);
+  background-color: var(--color-primary-hover);
 }
 
 @media (min-width: 768px) {

@@ -9,12 +9,22 @@ import Message from "../layout/Message";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
 import { MessageProps } from "../types/messageTypes";
+import CapitalizeText from "../components/CapitalizeText";
+
+
+// Interface para tipar os dados do cliente
+interface Client {
+  id: number;
+  name: string;
+}
 
 const Sales: React.FC = () => {
   const [sales, setSales] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<MessageProps | null>(null);
   const [selectedSales, setSelectedSales] = useState<Set<number>>(new Set());
+
+  const [allClients, setAllClients] = useState<Client[]>([]);
   
   const [showFilters, setShowFilters] = useState(false);
   const [filterClient, setFilterClient] = useState<string>("");
@@ -58,6 +68,18 @@ const Sales: React.FC = () => {
     getSales();
   }, [getSales]);
 
+  useEffect(() => {
+    const fetchAllClients = async () => {
+      try {
+        const response = await axiosInstance.get<Client[]>('/customers/all/');
+        setAllClients(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar a lista de clientes para o filtro:", error);
+      }
+    };
+    fetchAllClients();
+  }, []);
+
   const filteredSales = useMemo(() => {
     return sales.filter(sale => 
         (filterClient ? sale.customer_name === filterClient : true) &&
@@ -66,9 +88,9 @@ const Sales: React.FC = () => {
     );
   }, [sales, filterClient, filterProduct, filterPaymentStatus]);
 
-  const uniqueClients = useMemo(() => [...new Set(sales.map(s => s.customer_name))].sort((a,b) => a.localeCompare(b)), [sales]);
   const uniqueProducts = useMemo(() => [...new Set(sales.map(s => s.product_name))].sort((a,b) => a.localeCompare(b)), [sales]);
   const uniquePaymentStatus = useMemo(() => [...new Set(sales.map(s => s.payment_status))], [sales]);
+
 
   const handleToggleSelection = (id: number) => {
     setSelectedSales(prev => {
@@ -165,9 +187,14 @@ const Sales: React.FC = () => {
 
       {showFilters && (
         <div className={styles.filtersPanel}>
+          {/* --- 3. ATUALIZAR O SELECT DE CLIENTES --- */}
           <select value={filterClient} onChange={e => setFilterClient(e.target.value)}>
             <option value="">Todos os Clientes</option>
-            {uniqueClients.map(c => <option key={c} value={c}>{c}</option>)}
+            {allClients.map(client => (
+              <option key={client.id} value={client.name}>
+                <CapitalizeText text={client.name} />
+              </option>
+            ))}
           </select>
           <select value={filterProduct} onChange={e => setFilterProduct(e.target.value)}>
             <option value="">Todos os Produtos</option>
@@ -180,6 +207,7 @@ const Sales: React.FC = () => {
         </div>
       )}
 
+      {/* ... (resto do seu JSX para exibir as vendas) ... */}
       {loading ? (
         <Loading />
       ) : filteredSales.length > 0 ? (
