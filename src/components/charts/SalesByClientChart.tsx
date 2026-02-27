@@ -42,7 +42,10 @@ const SalesByClientChart: React.FC<ChartStyleProps> = ({ textColor, tooltipBgCol
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'right' as const, labels: { color: textColor, font: { family: 'Inter, sans-serif' } } },
+      legend: { 
+        position: 'bottom' as const, 
+        labels: { color: textColor, font: { family: 'Inter, sans-serif' }, padding: 20 } 
+      },
       tooltip: {
         backgroundColor: tooltipBgColor,
         titleColor: textColor,

@@ -5,256 +5,127 @@
 
 .pageHeader {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
 .pageHeader h1 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  color: var(--color-text-primary);
 }
 
 .primaryButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
   background-color: var(--color-primary);
   color: #fff;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
-  width: 100%;
-}
-
-.primaryButton:hover {
-  background-color: var(--color-surface);
+  border: none;
+  cursor: pointer;
 }
 
 .actionBar {
+  position: sticky;
+  top: 0.5rem;
+  z-index: 10;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   background-color: var(--color-surface);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
   border: 1px solid var(--color-border);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.selectionControls,
-.bulkActions,
-.filterActions {
+.selectionControls {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.selectionCount {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  gap: 0.8rem;
 }
 
 .actionButton {
-  display: inline-flex;
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--color-surface);
-  color: var(--color-text-secondary);
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.actionButton:hover {
+.actionButton.active {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
 
-.actionButton.active {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.actionButton.danger {
-  color: var(--color-error);
-}
-
-.actionButton.danger:hover {
-  background-color: rgba(239, 68, 68, 0.1);
-  border-color: var(--color-error);
-}
-
 .filtersPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background-color: var(--color-surface);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+  background: var(--color-surface);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
   border: 1px solid var(--color-border);
-  margin-bottom: 1.5rem;
-}
-
-.filtersPanel select {
-  flex-grow: 1;
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 0.75rem;
-  font-size: 1rem;
 }
 
 .salesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
 .saleCard {
-  background-color: var(--color-surface);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.saleCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
 }
 
 .cardHeader {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 0.8rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--color-border);
 }
 
 .status {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
   text-transform: uppercase;
 }
 
-.statusPaid {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: var(--color-success);
-}
+.statusPaid { background: rgba(16, 185, 129, 0.1); color: var(--color-success); }
+.statusPending { background: rgba(245, 158, 11, 0.1); color: var(--color-warning); }
 
-.statusPending {
-  background-color: rgba(245, 158, 11, 0.1);
-  color: var(--color-warning);
-}
+.total { margin-left: auto; font-weight: 700; font-size: 1.1rem; }
 
-.total {
-  margin-left: auto;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
+.cardBody { padding: 1rem; }
+.productName { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.infoWrapper p { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--color-text-secondary); margin: 0.2rem 0; }
 
-.cardBody {
-  padding: 1rem;
-  flex-grow: 1;
-}
+.cardActions { display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.5rem 1rem 1rem; }
+.iconButton { padding: 0.6rem; border-radius: 50%; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; }
+.iconButton.danger { color: var(--color-error); }
 
-.productName {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.customerName,
-.saleDate {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 0.25rem;
-}
-
-.cardActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 0 1rem 1rem;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.iconButton:hover {
-  background-color: var(--color-surface-light);
-  color: var(--color-text-primary);
-}
-
-.noResults {
-  text-align: center;
-  padding: 4rem;
-  color: var(--color-text-secondary);
-}
-
-.customCheckbox {
-  display: none;
-}
-.checkboxLabel {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-color: var(--color-background);
-  border: 2px solid var(--color-border);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.customCheckbox:checked + .checkboxLabel {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
-}
+.customCheckbox { display: none; }
+.checkboxLabel { width: 20px; height: 20px; border: 2px solid var(--color-border); border-radius: 6px; cursor: pointer; }
+.customCheckbox:checked + .checkboxLabel { background: var(--color-primary); border-color: var(--color-primary); background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e"); }
 
 @media (min-width: 768px) {
-  .pageContainer {
-    padding: 2rem;
-  }
-
-  .pageHeader {
-    flex-wrap: nowrap;
-  }
-
-  .pageHeader h1 {
-    font-size: 2rem;
-  }
-
-  .primaryButton {
-    width: auto;
-  }
-  
-  .actionBar {
-    flex-wrap: nowrap;
-  }
-
-  .filtersPanel {
-    flex-direction: row;
-  }
+  .salesGrid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .filtersPanel { grid-template-columns: repeat(3, 1fr); }
+  .pageHeader h1 { font-size: 2rem; }
 }

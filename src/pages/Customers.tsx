@@ -8,11 +8,12 @@ import Loading from "../components/Loading";
 import { MessageProps } from "../types/messageTypes";
 import Pagination from "../components/Pagination";
 import CapitalizeText from "../components/CapitalizeText";
+import ConfirmModal from "../components/modals/ConfirmModal";
 
 import styles from "./Customers.module.css";
 import { FaEdit, FaTrash, FaPlus, FaPhone, FaBirthdayCake, FaCreditCard, FaShoppingBag } from "react-icons/fa";
+import UniversalModal from "../components/form/UniversalModal";
 
-// Hook customizado para o "debounce"
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
@@ -26,18 +27,35 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue;
 };
 
-
 const Customers: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<MessageProps | null>(null);
+  
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // NOVO: Estado para controlar o filtro de status
+  const [filterActive, setFilterActive] = useState<string>("true");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const ITEMS_PER_PAGE = 20;
 
-  // Usa o hook de debounce para evitar chamadas excessivas à API
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: "danger" | "warning" | "info";
+    action: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "info",
+    action: () => {},
+  });
+
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const displayMessage = useCallback((msg: string, type: MessageProps['type']) => {
@@ -48,48 +66,54 @@ const Customers: React.FC = () => {
   const getAllCustomers = useCallback(async () => {
     try {
       setLoading(true);
-      // Adiciona o parâmetro `search` à chamada da API
-      const response = await axiosInstance.get(`/customers/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}&search=${debouncedSearchQuery}`);
+      // Incluímos o status de is_active na URL da API
+      let url = `/customers/?page=${currentPage}&page_size=${ITEMS_PER_PAGE}&search=${debouncedSearchQuery}`;
+      
+      if (filterActive !== "") {
+        url += `&is_active=${filterActive}`;
+      }
+
+      const response = await axiosInstance.get(url);
       
       setCustomers(response.data.results); 
       const totalCount = response.data.count;
       setTotalPages(Math.ceil(totalCount / ITEMS_PER_PAGE));
 
     } catch (error) {
-      console.error("Ocorreu um erro ao buscar clientes:", error);
       displayMessage("Falha ao carregar os clientes.", "error");
     } finally {
       setLoading(false);
     }
-  }, [displayMessage, currentPage, debouncedSearchQuery]); // Adiciona a busca debounced como dependência
+  }, [displayMessage, currentPage, debouncedSearchQuery, filterActive]);
 
-  // Reseta a página para 1 quando uma nova busca é feita
   useEffect(() => {
     if (currentPage !== 1) {
       setCurrentPage(1);
     }
-  }, [debouncedSearchQuery]);
-
+  }, [debouncedSearchQuery, filterActive]);
 
   useEffect(() => {
     getAllCustomers();
   }, [getAllCustomers]);
   
-  const handleDeleteCustomer = async (id: string) => {
-    if (!window.confirm("Deseja realmente excluir este cliente?")) return;
-
-    try {
-      await axiosInstance.delete(`/customers/${id}/`);
-      displayMessage("Cliente excluído com sucesso.", "info");
-      getAllCustomers();
-    } catch (error) {
-      console.error("Erro ao excluir cliente:", error);
-      displayMessage("Erro ao excluir o cliente.", "error");
-    }
+  const openDeleteConfirm = (id: string, name: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Confirmar Exclusão",
+      message: `Deseja realmente excluir o cliente "${name}"?`,
+      type: "danger",
+      action: async () => {
+        try {
+          await axiosInstance.delete(`/customers/${id}/`);
+          displayMessage("Cliente excluído com sucesso.", "info");
+          getAllCustomers();
+        } catch (error: any) {
+          const errorMsg = error.response?.data?.error || "Erro ao excluir o cliente.";
+          displayMessage(errorMsg, "error");
+        }
+      }
+    });
   };
-
-  // REMOVEMOS A FILTRAGEM LOCAL (filteredCustomers)
-  // O backend agora faz todo o trabalho!
 
   const formatPhoneNumber = (phone: string) => `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7)}`;
   const formatDate = (date: string) => format(parseISO(date), "dd/MM/yyyy");
@@ -100,39 +124,66 @@ const Customers: React.FC = () => {
 
       <header className={styles.pageHeader}>
         <h1>Gerenciar Clientes</h1>
-        <Link to="/customer/new" className={styles.primaryButton}>
+        <button 
+          onClick={() => { setSelectedId(undefined); setIsModalOpen(true); }} 
+          className={styles.primaryButton}
+        >
           <FaPlus /> Cadastrar Cliente
-        </Link>
+        </button>
       </header>
-      
-      <div className={styles.searchBar}>
+            
+      {/* NOVO: Ajuste visual para o Search e o Dropdown ficarem lado a lado */}
+      <div className={styles.searchBar} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <input
           type="text"
           placeholder="Buscar cliente por nome..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className={styles.searchInput}
+          style={{ flex: 1, minWidth: '200px' }}
         />
+        <select 
+          className={styles.searchInput} 
+          style={{ width: 'auto' }}
+          value={filterActive}
+          onChange={(e) => setFilterActive(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="true">Ativos</option>
+          <option value="false">Inativos</option>
+        </select>
       </div>
 
       {loading ? (
         <Loading />
-        // Agora usamos `customers` diretamente, pois a API já retorna a lista filtrada
       ) : customers.length > 0 ? (
         <> 
           <div className={styles.customerGrid}>
             {customers.map((customer) => (
               <div key={customer.id} className={styles.customerCard}>
-                {/* O restante do seu JSX permanece igual */}
                 <div className={styles.cardHeader}>
-                  <Link to={`/customer/${customer.id}`} className={styles.customerName}>
+                  <Link to={`/customer/${customer.id}`} className={styles.customerName} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <CapitalizeText text={customer.name} />
+                    {/* Badge visual para clientes inativos */}
+                    {!customer.is_active && (
+                      <span style={{ fontSize: '0.75rem', backgroundColor: 'var(--color-error)', color: '#fff', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 'bold' }}>
+                        Inativo
+                      </span>
+                    )}
                   </Link>
                   <div className={styles.cardActions}>
-                    <Link to={`/customer/${customer.id}?edit=true`} className={styles.iconButton} title="Editar">
+                    <button 
+                      onClick={() => { setSelectedId(customer.id); setIsModalOpen(true); }} 
+                      className={styles.iconButton} 
+                      title="Editar"
+                    >
                       <FaEdit />
-                    </Link>
-                    <button onClick={() => handleDeleteCustomer(customer.id)} className={`${styles.iconButton} ${styles.danger}`} title="Excluir">
+                    </button>
+                    <button 
+                      onClick={() => openDeleteConfirm(customer.id, customer.name)} 
+                      className={`${styles.iconButton} ${styles.danger}`} 
+                      title="Excluir"
+                    >
                       <FaTrash />
                     </button>
                   </div>
@@ -174,6 +225,33 @@ const Customers: React.FC = () => {
       ) : (
         <p className={styles.noResults}>Nenhum cliente encontrado.</p>
       )}
+
+      {/* NOVO: Campo Status adicionado ao Modal Universal */}
+      <UniversalModal
+        isOpen={isModalOpen}
+        onClose={() => { setIsModalOpen(false); getAllCustomers(); }}
+        title="Cliente"
+        endpoint="/customers"
+        id={selectedId}
+        initialData={{ name: "", phone_number: null, birthday: null, is_active: true, debt: 0, bought: 0 }}
+        fields={[
+          { label: "Nome*", name: "name", type: "text", required: true },
+          { label: "Telefone", name: "phone_number", type: "tel", placeholder: "(99) 99999-9999" },
+          { label: "Data de Nascimento", name: "birthday", type: "date" },
+          { label: "Status*", name: "is_active", type: "select", required: true, options: [{ label: "Ativo", value: "true" }, { label: "Inativo", value: "false" }] },
+          { label: "Dívida", name: "debt", type: "number", step: "0.01" },
+          { label: "Valor em compras", name: "bought", type: "number", step: "0.01" },
+        ]}
+      />
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.action}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        type={confirmModal.type}
+      />
     </div>
   );
 };
