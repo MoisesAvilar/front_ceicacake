@@ -8,7 +8,6 @@ interface ChartStyleProps {
   gridColor: string;
   primaryColor: string;
   tooltipBgColor: string;
-  // 1. Receber startDate e endDate
   startDate: string;
   endDate: string;
 }
@@ -18,10 +17,8 @@ const SalesByProductChart: React.FC<ChartStyleProps> = ({ textColor, gridColor, 
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // 2. Verificar se as datas existem antes de buscar
     if (startDate && endDate) {
       setLoading(true);
-      // 3. Passar as datas para a função do serviço
       Promise.all([fetchProducts(), fetchSalesByProduct(startDate, endDate)]).then(([products, sales]) => {
         const labels = sales.map((item: any) => 
           products.find((p: any) => p.value === item.product)?.label || item.product
@@ -41,12 +38,12 @@ const SalesByProductChart: React.FC<ChartStyleProps> = ({ textColor, gridColor, 
         });
       }).finally(() => setLoading(false));
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, primaryColor]); // primaryColor adicionada aqui
 
   if (loading || !chartData) return <div>Carregando...</div>;
 
   const options = {
-    indexAxis: 'y' as const, // Gráfico de barras horizontais para melhor leitura dos nomes
+    indexAxis: 'y' as const,
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

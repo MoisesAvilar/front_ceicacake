@@ -25,14 +25,14 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({ onChange }) => {
     setEndDate(formattedEndDate);
 
     onChange(firstSaleDate, formattedEndDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    // Garante que ambos os campos tenham valor antes de chamar o onChange
     if (startDate && endDate) {
       onChange(startDate, endDate);
     }
-  }, [startDate, endDate]);
+  }, [startDate, endDate, onChange]); // Adicionado o onChange aqui
 
   const getWeekDates = () => {
     const today = new Date();

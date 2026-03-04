@@ -87,9 +87,7 @@ const Customers: React.FC = () => {
   }, [displayMessage, currentPage, debouncedSearchQuery, filterActive]);
 
   useEffect(() => {
-    if (currentPage !== 1) {
-      setCurrentPage(1);
-    }
+    setCurrentPage(1);
   }, [debouncedSearchQuery, filterActive]);
 
   useEffect(() => {

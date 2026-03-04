@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// Import do useNavigate removido para limpar o erro
 import axiosInstance from "../../services/axiosConfig";
 import styles from "./Form.module.css";
 
@@ -44,13 +44,10 @@ const UniversalModal: React.FC<UniversalModalProps> = ({
             const data = res.data;
             const formattedData = { ...data };
             
-            // Formatar dados baseados no tipo do campo esperado
             fields.forEach(field => {
-              // Limitar campos de moeda/números decimais a 2 casas após a vírgula
               if (field.type === "number" && field.step === "0.01" && data[field.name] != null) {
                 formattedData[field.name] = Number(data[field.name]).toFixed(2);
               }
-              // Garantir que dados booleanos (true/false) conversem corretamente com o <select>
               if (field.type === "select" && typeof data[field.name] === "boolean") {
                 formattedData[field.name] = data[field.name] ? "true" : "false";
               }
